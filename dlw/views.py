@@ -37,16 +37,6 @@ from dlw.decorators import role_required
 #
 #
 #
-#
-#
-#
-#
-#
-#
-#
-#
-#
-
 def login_request(request):
     if request.method=='POST':
         u_id = request.POST.get('user_id')
