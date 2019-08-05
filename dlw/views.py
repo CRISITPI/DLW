@@ -26,9 +26,6 @@ from django.conf import settings
 from django.contrib.auth.decorators import user_passes_test
 from dlw.decorators import role_required
 # Create your views here.
-
-
-
 #
 #
 #
@@ -37,9 +34,6 @@ from dlw.decorators import role_required
 #
 #
 #
-#
-
-
 #
 #
 #
