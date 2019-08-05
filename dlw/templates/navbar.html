@@ -1,0 +1,108 @@
+{% load static %}
+
+<div class="page-header navbar-dark bg-dark">
+    <center><font color="white"><h3 style="margin:0 auto;">Diesel Locomotive Works, Varanasi</h3></font></center>
+    </div>
+<nav class="navbar navbar-expand-md navbar-dark bg-dark sticky-top">
+    
+    <button class="navbar-toggler" data-toggle="collapse" data-target="#collapse_target">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="collapse_target">
+    <a class="navbar-brand"><img src="{% static 'dlw/images/Indian_Railway1.svg.png' %}"></a>
+    <span class="navbar-text">Diesel Locomotive Works, Varanasi</span>
+    
+    <ul class="navbar nav" style="width:100%;">
+    {% if usermaster.role in "Superuser,Bogie,Wheel" %}
+        <li class="navbar-item dropdown">
+            <a class="navbar-link dropdown-toggle" data-toggle="dropdown" data-target="dropdown_target" href="#" style="font-size:16px;color:#ffffff;">
+            Add
+            <span class="caret"></span>
+            <div class="dropdown-menu" aria-labelledby="dropdown_target">
+                <a class="dropdown-item">Annual</a>
+                <a class="dropdown-item">Monthly</a>
+                <a class="dropdown-item">Daily</a>
+            </div>
+            </a>
+        </li>
+        {% endif %}
+        {% if usermaster.role in "Superuser" %}
+        <li class="navbar-item dropdown">
+            <a class="navbar-link dropdown-toggle" data-toggle="dropdown" data-target="dropdown_target" href="#" style="font-size:16px;color:#ffffff;">
+            Dashboard
+            <span class="caret"></span>
+            <div class="dropdown-menu" aria-labelledby="dropdown_target">
+                <a class="dropdown-item">First</a>
+                <a class="dropdown-item">Second</a>
+                <a class="dropdown-item">Third</a>
+            </div>
+            </a>
+        </li>
+        {% endif %}
+        {% if usermaster.role in "Superuser,Bogie,Wheel" %}
+        <li class="navbar-item dropdown">
+            <a class="navbar-link dropdown-toggle" data-toggle="dropdown" data-target="dropdown_target" href="#" style="font-size:16px;color:#ffffff;">
+            Production
+            <span class="caret"></span>
+            <div class="dropdown-menu" aria-labelledby="dropdown_target">
+                <a class="dropdown-item">First</a>
+                <a class="dropdown-item">Second</a>
+                <a class="dropdown-item">Third</a>
+            </div>
+            </a>
+        </li>
+        <li class="navbar-item dropdown">
+            <a class="navbar-link dropdown-toggle" data-toggle="dropdown" data-target="dropdown_target" href="#" style="font-size:16px;color:#ffffff;">
+            Manpower
+            <span class="caret"></span>
+            <div class="dropdown-menu" aria-labelledby="dropdown_target">
+            {% for menu in nav %}
+            {% if menu.navmenu in "Manpower" %}
+                <a class="dropdown-item">{{menu.navitem}}</a>
+            {% endif %}
+            {% endfor %}
+            </div>
+            </a>
+        </li>
+        <li class="navbar-item dropdown">
+            <a class="navbar-link dropdown-toggle" data-toggle="dropdown" data-target="dropdown_target" href="#" style="font-size:16px;color:#ffffff;">
+            Account
+            <span class="caret"></span>
+            <div class="dropdown-menu" aria-labelledby="dropdown_target">
+            {% for menu in nav %}
+            {% if menu.navmenu in "Account" %}
+                <a class="dropdown-item" href="{{menu.link}}">{{menu.navitem}}</a>
+            {% endif %}
+            {% endfor %}
+            </div>
+            </a>
+        </li>
+        <li>
+        {% if usermaster.role in "Superuser" %}
+            {% for menu in nav %}
+                {% if menu.navmenu in "Home" %}
+                    <a class="btn" href="{{menu.link}}"><i class="glyphicon glyphicon-log-in"></i>
+                <font color="#FFFFFF" size="4.5pt">{{menu.navmenu}}</font>
+            </a>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+        {% if usermaster.role in "Bogie,Wheel" %}
+            {% for menu in nav %}
+                {% if menu.navmenu in "Home" %}
+                    <a class="btn" href="{{menu.link}}"><i class="glyphicon glyphicon-log-in"></i>
+                <font color="#FFFFFF" size="4.5pt">{{menu.navmenu}}</font>
+            </a>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+        </li>
+        <li>
+            <a class="btn" onclick="foo()"><i class="glyphicon glyphicon-log-in"></i>
+                <font color="#FFFFFF" size="4.5pt">Logout</font>
+            </a>
+        </li>
+        {% endif %}
+    </ul>
+</div>
+</nav>
