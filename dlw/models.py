@@ -17,7 +17,7 @@ class navbar(models.Model):
 
 class user_master(models.Model):
     emp_id=models.CharField(max_length=15,primary_key=True)
-    role=models.CharField(max_length=25,null=True)
+    role=models.CharField(max_length=500,null=True)
     name=models.CharField(max_length=50,null=True)
     designation=models.CharField(max_length=50,null=True)
     department=models.CharField(max_length=50,null=True)
@@ -25,7 +25,7 @@ class user_master(models.Model):
     contactno=models.CharField(null=True,max_length=10)
 
 class roles(models.Model):
-    role=models.CharField(primary_key=True,max_length=25)
+    role=models.CharField(primary_key=True,max_length=50)
 
 
 

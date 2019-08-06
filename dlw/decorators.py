@@ -7,13 +7,24 @@ from dlw.models import user_master
 
 
 
+def roleslist(request,oldstr):
+    newstr=oldstr.replace("'","")
+    length=len(newstr)
+    newstrfin=newstr[1:length-1]
+    newlength=len(newstrfin)
+    rolelist=newstrfin.split(", ")
+    return rolelist
+
+
+
+
 def role_required(allowed_roles=[]):
     def decorator(func):
         def wrap(request,*args,**kwargs):
             cuser=request.user
             usermaster=user_master.objects.get(emp_id=cuser)
-            urole=usermaster.role
-            if urole in allowed_roles:
+            rolelist=roleslist(request,usermaster.role)
+            if(all (x in allowed_roles for x in rolelist)):
                 return func(request,*args,**kwargs)
             else:
                 raise PermissionDenied

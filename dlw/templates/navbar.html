@@ -13,7 +13,6 @@
     <span class="navbar-text">Diesel Locomotive Works, Varanasi</span>
     
     <ul class="navbar nav" style="width:100%;">
-    {% if usermaster.role in "Superuser,Bogie,Wheel" %}
         <li class="navbar-item dropdown">
             <a class="navbar-link dropdown-toggle" data-toggle="dropdown" data-target="dropdown_target" href="#" style="font-size:16px;color:#ffffff;">
             Add
@@ -25,8 +24,6 @@
             </div>
             </a>
         </li>
-        {% endif %}
-        {% if usermaster.role in "Superuser" %}
         <li class="navbar-item dropdown">
             <a class="navbar-link dropdown-toggle" data-toggle="dropdown" data-target="dropdown_target" href="#" style="font-size:16px;color:#ffffff;">
             Dashboard
@@ -38,8 +35,6 @@
             </div>
             </a>
         </li>
-        {% endif %}
-        {% if usermaster.role in "Superuser,Bogie,Wheel" %}
         <li class="navbar-item dropdown">
             <a class="navbar-link dropdown-toggle" data-toggle="dropdown" data-target="dropdown_target" href="#" style="font-size:16px;color:#ffffff;">
             Production
@@ -78,7 +73,6 @@
             </a>
         </li>
         <li>
-        {% if usermaster.role in "Superuser" %}
             {% for menu in nav %}
                 {% if menu.navmenu in "Home" %}
                     <a class="btn" href="{{menu.link}}"><i class="glyphicon glyphicon-log-in"></i>
@@ -86,23 +80,12 @@
             </a>
                 {% endif %}
             {% endfor %}
-        {% endif %}
-        {% if usermaster.role in "Bogie,Wheel" %}
-            {% for menu in nav %}
-                {% if menu.navmenu in "Home" %}
-                    <a class="btn" href="{{menu.link}}"><i class="glyphicon glyphicon-log-in"></i>
-                <font color="#FFFFFF" size="4.5pt">{{menu.navmenu}}</font>
-            </a>
-                {% endif %}
-            {% endfor %}
-        {% endif %}
         </li>
         <li>
             <a class="btn" onclick="foo()"><i class="glyphicon glyphicon-log-in"></i>
                 <font color="#FFFFFF" size="4.5pt">Logout</font>
             </a>
         </li>
-        {% endif %}
     </ul>
 </div>
 </nav>

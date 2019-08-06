@@ -45,10 +45,10 @@ def login_request(request):
         if user is not None:
             login(request, user)
             currentuser=user_master.objects.filter(emp_id=user).first()
-            role=currentuser.role
-            if role in ["Superuser"]:
+            rolelist=roleslist(request,currentuser.role)
+            if "Superuser" in rolelist:
                 return redirect('homeadmin')
-            if role in ["Bogie","Wheel"]:
+            else:
                 return redirect('homeuser')
         else:
             messages.error(request,"Invalid username or password")
@@ -82,6 +82,14 @@ def logout_request(request):
 
 
 
+def roleslist(request,oldstr):
+    newstr=oldstr.replace("'","")
+    length=len(newstr)
+    newstrfin=newstr[1:length-1]
+    newlength=len(newstrfin)
+    rolelist=newstrfin.split(", ")
+    return rolelist
+
 
 
 
@@ -90,7 +98,9 @@ def logout_request(request):
 def homeadmin(request):
     cuser=request.user
     usermaster=user_master.objects.filter(emp_id=cuser).first()
-    nav=dynamicnavbar(request,usermaster.role)
+    rolestring=usermaster.role
+    rolelist=roleslist(request,rolestring)
+    nav=dynamicnavbar(request,rolelist)
     context={
         'nav':nav,
         'usermaster':usermaster,
@@ -107,7 +117,9 @@ def homeadmin(request):
 def homeuser(request):
     cuser=request.user
     usermaster=user_master.objects.filter(emp_id=cuser).first()
-    nav=dynamicnavbar(request,usermaster.role)
+    rolestring=usermaster.role
+    rolelist=roleslist(request,rolestring)
+    nav=dynamicnavbar(request,rolelist)
     context={
         'nav':nav,
         'usermaster':usermaster,
@@ -123,15 +135,12 @@ def homeuser(request):
 
 
 @login_required
-def dynamicnavbar(request,role):
-    if(role=="Superuser"):
+def dynamicnavbar(request,rolelist=[]):
+    if("Superuser" in rolelist):
         nav=navbar.objects.filter(role="Superuser")
         return nav
-    if(role=="Bogie"):
-        nav=navbar.objects.filter(role="Bogie")
-        return nav
-    if(role=="Wheel"):
-        nav=navbar.objects.filter(role="Wheel")
+    else:
+        nav=navbar.objects.filter(role__in=rolelist).values('navmenu','navitem','navsubitem','link').distinct()
         return nav
 
 
@@ -145,13 +154,15 @@ def dynamicnavbar(request,role):
 def create(request):
     cuser=request.user
     usermaster=user_master.objects.filter(emp_id=cuser).first()
-    nav=dynamicnavbar(request,usermaster.role)
+    rolestring=usermaster.role
+    rolelist=roleslist(request,rolestring)
+    nav=dynamicnavbar(request,rolelist)
     emp=user_master.objects.filter(role__isnull=True)
     availableroles=roles.objects.all()
     if request.method == "POST":
         emp_id=request.POST.get('emp_id')
         email=request.POST.get('email')
-        role=request.POST.get('role')
+        role=request.POST.getlist('role')
         password="dlw@123"
         if role=="Superuser" and emp_id and role:
             employee=user_master.objects.filter(emp_id=emp_id).first()
@@ -247,7 +258,9 @@ def getauthempInfo(request):
 def delete_user(request):
     cuser=request.user
     usermaster=user_master.objects.filter(emp_id=cuser).first()
-    nav=dynamicnavbar(request,usermaster.role)
+    rolestring=usermaster.role
+    rolelist=roleslist(request,rolestring)
+    nav=dynamicnavbar(request,rolelist)
     users=User.objects.all()
     if not users:
         messages.success(request, 'No User Exist!')
@@ -283,7 +296,9 @@ def delete_user(request):
 def forget_password(request):
     cuser=request.user
     usermaster=user_master.objects.filter(emp_id=cuser).first()
-    nav=dynamicnavbar(request,usermaster.role)
+    rolestring=usermaster.role
+    rolelist=roleslist(request,rolestring)
+    nav=dynamicnavbar(request,rolelist)
     if request.method == "POST":
         emp=request.POST.get('emp_id')
         forgetuser=User.objects.filter(username=emp).first()

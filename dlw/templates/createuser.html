@@ -29,8 +29,7 @@
    	</select><br>
 
        <label>Select Role</label>
-       <select class="form-control" name="role" id="role" required>
-	   <option selected disabled hidden>Select Role</option>
+       <select class="form-control" name="role" id="role" required multiple>
    			{% for role in roles %}
    			<option value = {{role.role}}>{{role.role}}</option>
    		{% endfor %}
