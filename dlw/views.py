@@ -164,7 +164,7 @@ def create(request):
         email=request.POST.get('email')
         role=request.POST.getlist('role')
         password="dlw@123"
-        if role=="Superuser" and emp_id and role:
+        if role in "Superuser" and emp_id and role:
             employee=user_master.objects.filter(emp_id=emp_id).first()
             employee.role=role
             newuser = User.objects.create_user(username=emp_id, password=password,email=email)
@@ -174,7 +174,7 @@ def create(request):
             newuser.save()
             messages.success(request, 'Successfully Created!')
             return redirect('create')
-        elif role!="Superuser" and emp_id and role:
+        elif role not in "Superuser" and emp_id and role:
             employee=user_master.objects.filter(emp_id=emp_id).first()
             employee.role=role
             newuser = User.objects.create_user(username=emp_id, password=password,email=email)
