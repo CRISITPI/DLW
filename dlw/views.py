@@ -199,9 +199,6 @@ def create(request):
 
 
 
-
-
-
 def getEmpInfo(request):
     if request.method == "GET" and request.is_ajax():
         emp_id=request.GET.get('username')
