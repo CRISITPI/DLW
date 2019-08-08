@@ -199,6 +199,12 @@ def create(request):
 
 
 
+
+
+    
+
+    
+
 @login_required
 @role_required(allowed_roles=["Superuser"])
 def update_permission(request):
@@ -239,6 +245,10 @@ def update_permission(request):
 
 
 
+
+
+
+
 def getEmpInfo(request):
     if request.method == "GET" and request.is_ajax():
         emp_id=request.GET.get('username')
@@ -256,6 +266,10 @@ def getEmpInfo(request):
         return JsonResponse({"emp_info":emp_info}, status=200)
 
     return JsonResponse({"success":False}, status=400)
+
+
+
+
 
 
 
@@ -289,6 +303,10 @@ def getauthempInfo(request):
 
 
 
+
+
+
+
 def getPermissionInfo(request):
     if request.method == "GET" and request.is_ajax():
         selectrole=request.GET.get('username')
@@ -299,6 +317,9 @@ def getPermissionInfo(request):
         }
         return JsonResponse({"permission_info":permission_info}, status=200)
     return JsonResponse({"success":False}, status=400)
+
+
+
 
 
 
@@ -343,6 +364,9 @@ def delete_user(request):
 
 
 
+
+
+
 @login_required
 @role_required(allowed_roles=["Superuser"])
 def forget_password(request):
@@ -375,6 +399,8 @@ def forget_password(request):
 
 
 
+
+
 def forget_path(request):
     if request.method == "POST":
         option=request.POST.get('forget')
@@ -383,6 +409,8 @@ def forget_path(request):
         else:
             return redirect('forget_password_path')
     return render(request,'forget_password_path.html',{})
+
+
 
 
 
