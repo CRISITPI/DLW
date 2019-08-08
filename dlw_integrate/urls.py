@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from dlw.views import login_request,logout_request,homeadmin,create,homeuser,ChartData,dynamicnavbar,getEmpInfo,delete_user,forget_password,forget_path,getauthempInfo
+from dlw.views import update_permission,getPermissionInfo,login_request,logout_request,homeadmin,create,homeuser,ChartData,dynamicnavbar,getEmpInfo,delete_user,forget_password,forget_path,getauthempInfo
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
@@ -35,8 +35,10 @@ urlpatterns = [
     path('reset/done/',auth_views.PasswordResetCompleteView.as_view(template_name='password_reset_complete.html'),name='password_reset_complete'),
     path('', include('django.contrib.auth.urls')),
     path('ajax/get_emp_info/',getEmpInfo,name='get_emp_info'),
+    path('ajax/get_permission_info/',getPermissionInfo,name='get_permission_info'),
     path('ajax/get_auth_emp_info/',getauthempInfo,name='get_auth_emp_info'),
     path('delete_user/',delete_user,name='delete_user'),
     path('forget_password/', forget_password, name='forget_password'),
     path('forget_password_path/',forget_path,name='forget_password_path'),
+    path('update_permission/',update_permission,name='update_permission'),
 ]

@@ -6,7 +6,6 @@ from dlw.models import user_master
 
 
 
-
 def roleslist(request,oldstr):
     newstr=oldstr.replace("'","")
     length=len(newstr)

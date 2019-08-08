@@ -26,7 +26,5 @@ class user_master(models.Model):
 
 class roles(models.Model):
     role=models.CharField(primary_key=True,max_length=50)
-
-
-
+    parent=models.CharField(max_length=50,null=True)
 

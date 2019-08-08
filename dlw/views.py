@@ -112,8 +112,9 @@ def homeadmin(request):
 
 
 
+
 @login_required
-@role_required(allowed_roles=["Bogie","Wheel"])
+@role_required(allowed_roles=["Bogie","Wheel","Wheelsub1","Wheelsub2","Bogiesub1","Bogiesub2"])
 def homeuser(request):
     cuser=request.user
     usermaster=user_master.objects.filter(emp_id=cuser).first()
@@ -126,7 +127,6 @@ def homeuser(request):
         'ip':get_client_ip(request),
     }
     return render(request,'homeuser.html',context)
-
 
 
 
@@ -158,15 +158,16 @@ def create(request):
     rolelist=roleslist(request,rolestring)
     nav=dynamicnavbar(request,rolelist)
     emp=user_master.objects.filter(role__isnull=True)
-    availableroles=roles.objects.all()
+    availableroles=roles.objects.all().values('parent').distinct()
     if request.method == "POST":
         emp_id=request.POST.get('emp_id')
         email=request.POST.get('email')
-        role=request.POST.getlist('role')
+        role=request.POST.get('role')
+        sublevelrole=request.POST.getlist('sublevel')
         password="dlw@123"
-        if role=="Superuser" and emp_id and role:
+        if "Superuser" in sublevelrole and emp_id and role and sublevelrole:
             employee=user_master.objects.filter(emp_id=emp_id).first()
-            employee.role=role
+            employee.role=sublevelrole
             newuser = User.objects.create_user(username=emp_id, password=password,email=email)
             employee.save()
             newuser.is_staff= True
@@ -174,9 +175,9 @@ def create(request):
             newuser.save()
             messages.success(request, 'Successfully Created!')
             return redirect('create')
-        elif role!="Superuser" and emp_id and role:
+        elif "Superuser" not in sublevelrole and emp_id and role and sublevelrole:
             employee=user_master.objects.filter(emp_id=emp_id).first()
-            employee.role=role
+            employee.role=sublevelrole
             newuser = User.objects.create_user(username=emp_id, password=password,email=email)
             employee.save()
             newuser.is_staff= True
@@ -196,6 +197,42 @@ def create(request):
 
     return render(request,'createuser.html',context)
 
+
+
+@login_required
+@role_required(allowed_roles=["Superuser"])
+def update_permission(request):
+    cuser=request.user
+    usermaster=user_master.objects.filter(emp_id=cuser).first()
+    rolestring=usermaster.role
+    rolelist=roleslist(request,rolestring)
+    nav=dynamicnavbar(request,rolelist)
+    users=User.objects.all()
+    availableroles=roles.objects.all().values('parent').distinct()
+    if request.method == "POST":
+        updateuser=request.POST.get('emp_id')
+        sublevelrole=request.POST.getlist('sublevel')
+        if updateuser and sublevelrole:
+            usermasterupdate=user_master.objects.filter(emp_id=updateuser).first()
+            usermasterupdate.role=sublevelrole
+            usermasterupdate.save()
+            messages.success(request, 'Successfully Updated!')
+            return redirect('update_permission')
+        else:
+            messages.error(request,"Error!")
+            return redirect('update_permission')
+
+    # else:
+    #     messages.error(request, 'Error No User selected!')
+
+    context={
+        'users':users,
+        'nav':nav,
+        'usermaster':usermaster,
+        'ip':get_client_ip(request),
+        'roles':availableroles,
+    }
+    return render(request,'update_permission.html',context)
 
 
 
@@ -246,6 +283,21 @@ def getauthempInfo(request):
                 "contactno":""
             }
             return JsonResponse({"auth_info":auth_info}, status=200)
+    return JsonResponse({"success":False}, status=400)
+
+
+
+
+
+def getPermissionInfo(request):
+    if request.method == "GET" and request.is_ajax():
+        selectrole=request.GET.get('username')
+        subshop=roles.objects.filter(parent=selectrole).values('role')
+        sub=list(subshop.values('role'))
+        permission_info={
+            "sub":sub,
+        }
+        return JsonResponse({"permission_info":permission_info}, status=200)
     return JsonResponse({"success":False}, status=400)
 
 
