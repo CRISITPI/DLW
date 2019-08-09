@@ -114,7 +114,7 @@ def homeadmin(request):
 
 
 @login_required
-@role_required(allowed_roles=["Bogie","Wheel","Wheelsub1","Wheelsub2","Bogiesub1","Bogiesub2"])
+@role_required(allowed_roles=["Bogie","Wheel","Wheelsub1","Wheelsub2","Bogiesub1","Bogiesub2","Wheel_shop_incharge","Bogie_shop_incharge"])
 def homeuser(request):
     cuser=request.user
     usermaster=user_master.objects.filter(emp_id=cuser).first()
@@ -203,10 +203,10 @@ def create(request):
 
     
 
-    
+
 
 @login_required
-@role_required(allowed_roles=["Superuser"])
+@role_required(allowed_roles=["Superuser","Wheel_shop_incharge","Bogie_shop_incharge"])
 def update_permission(request):
     cuser=request.user
     usermaster=user_master.objects.filter(emp_id=cuser).first()
