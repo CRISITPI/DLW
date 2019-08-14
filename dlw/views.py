@@ -166,6 +166,7 @@ def create(request):
         if "Superuser" in sublevelrole and emp_id and role and sublevelrole:
             employee=user_master.objects.filter(emp_id=emp_id).first()
             employee.role=sublevelrolelist
+            employee.parent=role
             newuser = User.objects.create_user(username=emp_id, password=password,email=email)
             employee.save()
             newuser.is_staff= True
@@ -176,6 +177,7 @@ def create(request):
         elif "Superuser" not in sublevelrole and emp_id and role and sublevelrole:
             employee=user_master.objects.filter(emp_id=emp_id).first()
             employee.role=sublevelrolelist
+            employee.parent=role
             newuser = User.objects.create_user(username=emp_id, password=password,email=email)
             employee.save()
             newuser.is_staff= True
@@ -215,10 +217,13 @@ def update_permission(request):
     if request.method == "POST":
         updateuser=request.POST.get('emp_id')
         sublevelrole=request.POST.getlist('sublevel')
+        role=request.POST.get('role')
         sublevelrolelist= ", ".join(sublevelrole)
         if updateuser and sublevelrole:
             usermasterupdate=user_master.objects.filter(emp_id=updateuser).first()
             usermasterupdate.role=sublevelrolelist
+            # tobeparent=roles.objects.all().filter(role=sublevelrole[0]).first()
+            usermasterupdate.parent=role
             usermasterupdate.save()
             messages.success(request, 'Successfully Updated!')
             return redirect('update_permission')
@@ -252,8 +257,9 @@ def update_permission_incharge(request):
     parentrole=roles.objects.all().filter(role__in=rolelist).first()
     available=roles.objects.all().filter(parent=parentrole.parent).values('role').exclude(role__in=rolelist)
     availablelist=roles.objects.all().filter(parent=parentrole.parent).values_list('role',flat=True).exclude(role__in=rolelist)
-    users=user_master.objects.all().filter(role__in=list(availablelist))
+    users=user_master.objects.all().filter(parent=parentrole.parent).values('emp_id').exclude(role__in=rolelist)
     nav=dynamicnavbar(request,rolelist)
+    print(users)
     if request.method == "POST":
         updateuser=request.POST.get('emp_id')
         sublevelrole=request.POST.getlist('sublevel')
@@ -274,6 +280,7 @@ def update_permission_incharge(request):
         'usermaster':usermaster,
         'ip':get_client_ip(request),
         'roles':available,
+        'check':availablelist,
     }
     return render(request,'update_permission_incharge.html',context)
 
@@ -376,14 +383,11 @@ def delete_user(request):
             return redirect('delete_user')
         usermasterupdate=user_master.objects.filter(emp_id=delete.username).first()
         usermasterupdate.role=None
+        usermasterupdate.parent=None
         delete.delete()
         usermasterupdate.save()
         messages.success(request, 'Successfully Deleted!')
         return redirect('delete_user')
-
-    # else:
-    #     messages.error(request, 'Error No User selected!')
-
     context={
         'users':users,
         'nav':nav,
