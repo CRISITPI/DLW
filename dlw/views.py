@@ -258,7 +258,6 @@ def update_permission_incharge(request):
     available=roles.objects.all().filter(parent=parentrole.parent).values('role').exclude(role__in=rolelist)
     users=user_master.objects.all().filter(parent=parentrole.parent).values('emp_id').exclude(role__in=rolelist)
     nav=dynamicnavbar(request,rolelist)
-    print(users)
     if request.method == "POST":
         updateuser=request.POST.get('emp_id')
         sublevelrole=request.POST.getlist('sublevel')
