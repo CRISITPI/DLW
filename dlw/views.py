@@ -45,7 +45,8 @@ def login_request(request):
         if user is not None:
             login(request, user)
             currentuser=user_master.objects.filter(emp_id=user).first()
-            if "Superuser" in currentuser.role:
+            rolelist=currentuser.role.split(", ")
+            if "Superuser" in rolelist:
                 return redirect('homeadmin')
             else:
                 return redirect('homeuser')
