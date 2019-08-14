@@ -45,7 +45,6 @@ def login_request(request):
         if user is not None:
             login(request, user)
             currentuser=user_master.objects.filter(emp_id=user).first()
-            # rolelist=roleslist(request,currentuser.role)
             if "Superuser" in currentuser.role:
                 return redirect('homeadmin')
             else:
@@ -117,7 +116,6 @@ def homeadmin(request):
 def homeuser(request):
     cuser=request.user
     usermaster=user_master.objects.filter(emp_id=cuser).first()
-    # rolestring=usermaster.role
     rolelist=usermaster.role.split(", ")
     nav=dynamicnavbar(request,rolelist)
     context={
@@ -153,7 +151,6 @@ def dynamicnavbar(request,rolelist=[]):
 def create(request):
     cuser=request.user
     usermaster=user_master.objects.filter(emp_id=cuser).first()
-    # rolestring=usermaster.role
     rolelist=usermaster.role.split(", ")
     nav=dynamicnavbar(request,rolelist)
     emp=user_master.objects.filter(role__isnull=True)
@@ -210,7 +207,6 @@ def create(request):
 def update_permission(request):
     cuser=request.user
     usermaster=user_master.objects.filter(emp_id=cuser).first()
-    # rolestring=usermaster.role
     rolelist=usermaster.role.split(", ")
     nav=dynamicnavbar(request,rolelist)
     users=User.objects.all()
@@ -251,7 +247,6 @@ def update_permission(request):
 def update_permission_incharge(request):
     cuser=request.user
     usermaster=user_master.objects.filter(emp_id=cuser).first()
-    # rolestring=usermaster.role
     rolelist=usermaster.role.split(", ")
     parentrole=roles.objects.all().filter(role__in=rolelist).first()
     available=roles.objects.all().filter(parent=parentrole.parent).values('role').exclude(role__in=rolelist)
@@ -367,7 +362,6 @@ def getPermissionInfo(request):
 def delete_user(request):
     cuser=request.user
     usermaster=user_master.objects.filter(emp_id=cuser).first()
-    # rolestring=usermaster.role
     rolelist=usermaster.role.split(", ")
     nav=dynamicnavbar(request,rolelist)
     users=User.objects.all()
@@ -408,7 +402,6 @@ def delete_user(request):
 def forget_password(request):
     cuser=request.user
     usermaster=user_master.objects.filter(emp_id=cuser).first()
-    # rolestring=usermaster.role
     rolelist=usermaster.role.split(", ")
     nav=dynamicnavbar(request,rolelist)
     if request.method == "POST":

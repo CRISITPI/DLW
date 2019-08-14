@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from dlw.views import update_permission,getPermissionInfo,login_request,logout_request,homeadmin,create,homeuser,ChartData,dynamicnavbar,getEmpInfo,delete_user,forget_password,forget_path,getauthempInfo
+from dlw.views import update_permission_incharge,update_permission,getPermissionInfo,login_request,logout_request,homeadmin,create,homeuser,ChartData,dynamicnavbar,getEmpInfo,delete_user,forget_password,forget_path,getauthempInfo
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
@@ -41,4 +41,5 @@ urlpatterns = [
     path('forget_password/', forget_password, name='forget_password'),
     path('forget_password_path/',forget_path,name='forget_password_path'),
     path('update_permission/',update_permission,name='update_permission'),
+    path('update_permission_incharge/',update_permission_incharge,name='update_permission_incharge'),
 ]
