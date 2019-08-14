@@ -256,7 +256,6 @@ def update_permission_incharge(request):
     rolelist=usermaster.role.split(", ")
     parentrole=roles.objects.all().filter(role__in=rolelist).first()
     available=roles.objects.all().filter(parent=parentrole.parent).values('role').exclude(role__in=rolelist)
-    availablelist=roles.objects.all().filter(parent=parentrole.parent).values_list('role',flat=True).exclude(role__in=rolelist)
     users=user_master.objects.all().filter(parent=parentrole.parent).values('emp_id').exclude(role__in=rolelist)
     nav=dynamicnavbar(request,rolelist)
     print(users)
@@ -280,7 +279,6 @@ def update_permission_incharge(request):
         'usermaster':usermaster,
         'ip':get_client_ip(request),
         'roles':available,
-        'check':availablelist,
     }
     return render(request,'update_permission_incharge.html',context)
 
