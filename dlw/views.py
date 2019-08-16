@@ -82,15 +82,6 @@ def logout_request(request):
 
 
 
-# def roleslist(request,oldstr):
-#     newstr=oldstr.replace("'","")
-#     length=len(newstr)
-#     newstrfin=newstr[1:length-1]
-#     newlength=len(newstrfin)
-#     rolelist=newstrfin.split(", ")
-#     return rolelist
-
-
 
 
 @login_required
@@ -163,10 +154,7 @@ def create(request):
         sublevelrole=request.POST.getlist('sublevel')
         sublevelrolelist= ", ".join(sublevelrole)
         password="dlw@123"
-
-        if role in "Superuser" and emp_id and role:
-=======
-            if "Superuser" in sublevelrole and emp_id and role and sublevelrole:
+        if "Superuser" in sublevelrole and emp_id and role and sublevelrole:
             employee=user_master.objects.filter(emp_id=emp_id).first()
             employee.role=sublevelrolelist
             employee.parent=role
@@ -177,9 +165,6 @@ def create(request):
             newuser.save()
             messages.success(request, 'Successfully Created!')
             return redirect('create')
-<<<<<<< HEAD
-        elif role not in "Superuser" and emp_id and role:
-=======
         elif "Superuser" not in sublevelrole and emp_id and role and sublevelrole:
             employee=user_master.objects.filter(emp_id=emp_id).first()
             employee.role=sublevelrolelist
@@ -228,7 +213,6 @@ def update_permission(request):
         if updateuser and sublevelrole:
             usermasterupdate=user_master.objects.filter(emp_id=updateuser).first()
             usermasterupdate.role=sublevelrolelist
-            # tobeparent=roles.objects.all().filter(role=sublevelrole[0]).first()
             usermasterupdate.parent=role
             usermasterupdate.save()
             messages.success(request, 'Successfully Updated!')
