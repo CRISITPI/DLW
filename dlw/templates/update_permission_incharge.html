@@ -18,12 +18,23 @@
 <form method="POST">{%csrf_token%}
    <div class="col-4">
    <br>
-   	<label>Select Employee-Id to Delete</label>
+   	<label>Select Employee-Id to Update</label>
      
    	<select class="form-control" id = "users" name="emp_id">
      <option selected disabled hidden>Select Employee Id</option>
    		{% for uname in users %}
-   			<option value = {{uname.username}}>{{uname.username}}</option>
+   			<option value = {{uname.emp_id}}>{{uname.emp_id}}</option>
+   		{% endfor %}
+   	</select><br>
+
+
+
+
+       <label>Select New Permission</label>
+       <select class="form-control" name="sublevel" id="sublevel" required multiple>
+	   <option selected disabled hidden>Select Permission/s</option>
+       {% for permi in roles %}
+   			<option value = {{permi.role}}>{{permi.role}}</option>
    		{% endfor %}
    	</select><br>
 </div><br>
@@ -43,7 +54,7 @@
    	</table>
    </div>
    <br>
-        <center><button type="submit" class="button button2">Delete</button><br></center>
+        <center><button type="submit" class="button button2">Update</button><br></center>
        
 </form>
 

@@ -18,6 +18,7 @@ class navbar(models.Model):
 class user_master(models.Model):
     emp_id=models.CharField(max_length=15,primary_key=True)
     role=models.CharField(max_length=500,null=True)
+    parent=models.CharField(max_length=50,null=True)
     name=models.CharField(max_length=50,null=True)
     designation=models.CharField(max_length=50,null=True)
     department=models.CharField(max_length=50,null=True)
@@ -26,7 +27,5 @@ class user_master(models.Model):
 
 class roles(models.Model):
     role=models.CharField(primary_key=True,max_length=50)
-
-
-
+    parent=models.CharField(max_length=50,null=True)
 

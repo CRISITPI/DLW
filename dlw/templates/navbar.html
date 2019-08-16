@@ -73,15 +73,6 @@
             </a>
         </li>
         <li>
-            {% for menu in nav %}
-                {% if menu.navmenu in "Home" %}
-                    <a class="btn" href="{{menu.link}}"><i class="glyphicon glyphicon-log-in"></i>
-                <font color="#FFFFFF" size="4.5pt">{{menu.navmenu}}</font>
-            </a>
-                {% endif %}
-            {% endfor %}
-        </li>
-        <li>
             <a class="btn" onclick="foo()"><i class="glyphicon glyphicon-log-in"></i>
                 <font color="#FFFFFF" size="4.5pt">Logout</font>
             </a>

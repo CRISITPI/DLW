@@ -19,21 +19,64 @@
 
    <div class="col-4">
    <br>
+
+
+
+
+
    	<label>Select Employee Id</label>
-     
    	<select class="form-control" id = "users" name="emp_id" required>
-     <option selected disabled hidden>Select User</option>
+     <option selected disabled hidden>Select Employee Id</option>
    		{% for uname in emp %}
    			<option value = {{uname.emp_id}}>{{uname.emp_id}}</option>
    		{% endfor %}
    	</select><br>
 
-       <label>Select Role</label>
-       <select class="form-control" name="role" id="role" required multiple>
+
+
+
+
+       <label>Select Parent</label>
+       <select class="form-control" name="role" id="role" required>
+	   <option selected disabled hidden>Select Parent</option>
    			{% for role in roles %}
-   			<option value = {{role.role}}>{{role.role}}</option>
+   			<option value = {{role.parent}}>{{role.parent}}</option>
    		{% endfor %}
    	</select><br>
+
+
+
+
+	   <label>Select Permission</label>
+       <select class="form-control" name="sublevel" id="sublevel" required multiple>
+	   <option selected disabled hidden>Select Permission/s</option>
+			<script>
+			$(document).ready(function(){
+   $("#role").change(function(e){
+   	e.preventDefault();
+   	var username = $(this).val();
+   	var data = {username};
+       	$.ajax({
+   		type : 'GET',
+   		url :  "{% url 'get_permission_info' %}",
+        dataType : 'json',
+   		data : data,
+   		success : function(response){
+			   $('#sublevel').html('');
+   				for(var i=0;i<response.permission_info.sub.length;i++){
+				$("#sublevel").append(`<option>${response.permission_info.sub[i].role}</option>`);
+				}
+   		},
+   		error : function(response){
+   		}
+   	})
+})
+})
+			</script>
+   	</select><br>
+
+
+
 	   Email<input type="email" id="email" name="email" class="form-control" readonly><br>
    </div>
    <div class="col-12" id = "user_info">
@@ -82,6 +125,9 @@ $(document).ready(function(){
    	})
 })
 })
+
+
+
 </script>
 
 {% endblock content %}

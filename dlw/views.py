@@ -45,7 +45,7 @@ def login_request(request):
         if user is not None:
             login(request, user)
             currentuser=user_master.objects.filter(emp_id=user).first()
-            rolelist=roleslist(request,currentuser.role)
+            rolelist=currentuser.role.split(", ")
             if "Superuser" in rolelist:
                 return redirect('homeadmin')
             else:
@@ -82,13 +82,13 @@ def logout_request(request):
 
 
 
-def roleslist(request,oldstr):
-    newstr=oldstr.replace("'","")
-    length=len(newstr)
-    newstrfin=newstr[1:length-1]
-    newlength=len(newstrfin)
-    rolelist=newstrfin.split(", ")
-    return rolelist
+# def roleslist(request,oldstr):
+#     newstr=oldstr.replace("'","")
+#     length=len(newstr)
+#     newstrfin=newstr[1:length-1]
+#     newlength=len(newstrfin)
+#     rolelist=newstrfin.split(", ")
+#     return rolelist
 
 
 
@@ -98,8 +98,7 @@ def roleslist(request,oldstr):
 def homeadmin(request):
     cuser=request.user
     usermaster=user_master.objects.filter(emp_id=cuser).first()
-    rolestring=usermaster.role
-    rolelist=roleslist(request,rolestring)
+    rolelist=usermaster.role.split(", ")
     nav=dynamicnavbar(request,rolelist)
     context={
         'nav':nav,
@@ -112,13 +111,13 @@ def homeadmin(request):
 
 
 
+
 @login_required
-@role_required(allowed_roles=["Bogie","Wheel"])
+@role_required(allowed_roles=["Bogie","Wheel","Wheelsub1","Wheelsub2","Bogiesub1","Bogiesub2","Wheel_shop_incharge","Bogie_shop_incharge"])
 def homeuser(request):
     cuser=request.user
     usermaster=user_master.objects.filter(emp_id=cuser).first()
-    rolestring=usermaster.role
-    rolelist=roleslist(request,rolestring)
+    rolelist=usermaster.role.split(", ")
     nav=dynamicnavbar(request,rolelist)
     context={
         'nav':nav,
@@ -126,7 +125,6 @@ def homeuser(request):
         'ip':get_client_ip(request),
     }
     return render(request,'homeuser.html',context)
-
 
 
 
@@ -154,19 +152,25 @@ def dynamicnavbar(request,rolelist=[]):
 def create(request):
     cuser=request.user
     usermaster=user_master.objects.filter(emp_id=cuser).first()
-    rolestring=usermaster.role
-    rolelist=roleslist(request,rolestring)
+    rolelist=usermaster.role.split(", ")
     nav=dynamicnavbar(request,rolelist)
     emp=user_master.objects.filter(role__isnull=True)
-    availableroles=roles.objects.all()
+    availableroles=roles.objects.all().values('parent').distinct()
     if request.method == "POST":
         emp_id=request.POST.get('emp_id')
         email=request.POST.get('email')
-        role=request.POST.getlist('role')
+        role=request.POST.get('role')
+        sublevelrole=request.POST.getlist('sublevel')
+        sublevelrolelist= ", ".join(sublevelrole)
         password="dlw@123"
+<<<<<<< HEAD
         if role in "Superuser" and emp_id and role:
+=======
+        if "Superuser" in sublevelrole and emp_id and role and sublevelrole:
+>>>>>>> me
             employee=user_master.objects.filter(emp_id=emp_id).first()
-            employee.role=role
+            employee.role=sublevelrolelist
+            employee.parent=role
             newuser = User.objects.create_user(username=emp_id, password=password,email=email)
             employee.save()
             newuser.is_staff= True
@@ -174,9 +178,14 @@ def create(request):
             newuser.save()
             messages.success(request, 'Successfully Created!')
             return redirect('create')
+<<<<<<< HEAD
         elif role not in "Superuser" and emp_id and role:
+=======
+        elif "Superuser" not in sublevelrole and emp_id and role and sublevelrole:
+>>>>>>> me
             employee=user_master.objects.filter(emp_id=emp_id).first()
-            employee.role=role
+            employee.role=sublevelrolelist
+            employee.parent=role
             newuser = User.objects.create_user(username=emp_id, password=password,email=email)
             employee.save()
             newuser.is_staff= True
@@ -199,6 +208,94 @@ def create(request):
 
 
 
+<<<<<<< HEAD
+=======
+
+    
+
+
+
+@login_required
+@role_required(allowed_roles=["Superuser"])
+def update_permission(request):
+    cuser=request.user
+    usermaster=user_master.objects.filter(emp_id=cuser).first()
+    rolelist=usermaster.role.split(", ")
+    nav=dynamicnavbar(request,rolelist)
+    users=User.objects.all()
+    availableroles=roles.objects.all().values('parent').distinct()
+    if request.method == "POST":
+        updateuser=request.POST.get('emp_id')
+        sublevelrole=request.POST.getlist('sublevel')
+        role=request.POST.get('role')
+        sublevelrolelist= ", ".join(sublevelrole)
+        if updateuser and sublevelrole:
+            usermasterupdate=user_master.objects.filter(emp_id=updateuser).first()
+            usermasterupdate.role=sublevelrolelist
+            # tobeparent=roles.objects.all().filter(role=sublevelrole[0]).first()
+            usermasterupdate.parent=role
+            usermasterupdate.save()
+            messages.success(request, 'Successfully Updated!')
+            return redirect('update_permission')
+        else:
+            messages.error(request,"Error!")
+            return redirect('update_permission')
+
+    context={
+        'users':users,
+        'nav':nav,
+        'usermaster':usermaster,
+        'ip':get_client_ip(request),
+        'roles':availableroles
+    }
+    return render(request,'update_permission.html',context)
+
+
+
+
+
+
+
+
+
+@login_required
+@role_required(allowed_roles=["Wheel_shop_incharge","Bogie_shop_incharge"])
+def update_permission_incharge(request):
+    cuser=request.user
+    usermaster=user_master.objects.filter(emp_id=cuser).first()
+    rolelist=usermaster.role.split(", ")
+    parentrole=roles.objects.all().filter(role__in=rolelist).first()
+    available=roles.objects.all().filter(parent=parentrole.parent).values('role').exclude(role__in=rolelist)
+    users=user_master.objects.all().filter(parent=parentrole.parent).values('emp_id').exclude(role__in=rolelist)
+    nav=dynamicnavbar(request,rolelist)
+    if request.method == "POST":
+        updateuser=request.POST.get('emp_id')
+        sublevelrole=request.POST.getlist('sublevel')
+        sublevelrolelist= ", ".join(sublevelrole)
+        if updateuser and sublevelrole:
+            usermasterupdate=user_master.objects.filter(emp_id=updateuser).first()
+            usermasterupdate.role=sublevelrolelist
+            usermasterupdate.save()
+            messages.success(request, 'Successfully Updated!')
+            return redirect('update_permission_incharge')
+        else:
+            messages.error(request,"Error!")
+            return redirect('update_permission_incharge')
+
+    context={
+        'users':users,
+        'nav':nav,
+        'usermaster':usermaster,
+        'ip':get_client_ip(request),
+        'roles':available,
+    }
+    return render(request,'update_permission_incharge.html',context)
+
+
+
+
+
+>>>>>>> me
 def getEmpInfo(request):
     if request.method == "GET" and request.is_ajax():
         emp_id=request.GET.get('username')
@@ -216,6 +313,10 @@ def getEmpInfo(request):
         return JsonResponse({"emp_info":emp_info}, status=200)
 
     return JsonResponse({"success":False}, status=400)
+
+
+
+
 
 
 
@@ -250,13 +351,34 @@ def getauthempInfo(request):
 
 
 
+
+
+
+def getPermissionInfo(request):
+    if request.method == "GET" and request.is_ajax():
+        selectrole=request.GET.get('username')
+        subshop=roles.objects.filter(parent=selectrole).values('role')
+        sub=list(subshop.values('role'))
+        permission_info={
+            "sub":sub,
+        }
+        return JsonResponse({"permission_info":permission_info}, status=200)
+    return JsonResponse({"success":False}, status=400)
+
+
+
+
+
+
+
+
+
 @login_required
 @role_required(allowed_roles=["Superuser"])
 def delete_user(request):
     cuser=request.user
     usermaster=user_master.objects.filter(emp_id=cuser).first()
-    rolestring=usermaster.role
-    rolelist=roleslist(request,rolestring)
+    rolelist=usermaster.role.split(", ")
     nav=dynamicnavbar(request,rolelist)
     users=User.objects.all()
     if not users:
@@ -269,14 +391,11 @@ def delete_user(request):
             return redirect('delete_user')
         usermasterupdate=user_master.objects.filter(emp_id=delete.username).first()
         usermasterupdate.role=None
+        usermasterupdate.parent=None
         delete.delete()
         usermasterupdate.save()
         messages.success(request, 'Successfully Deleted!')
         return redirect('delete_user')
-
-    # else:
-    #     messages.error(request, 'Error No User selected!')
-
     context={
         'users':users,
         'nav':nav,
@@ -288,13 +407,15 @@ def delete_user(request):
 
 
 
+
+
+
 @login_required
 @role_required(allowed_roles=["Superuser"])
 def forget_password(request):
     cuser=request.user
     usermaster=user_master.objects.filter(emp_id=cuser).first()
-    rolestring=usermaster.role
-    rolelist=roleslist(request,rolestring)
+    rolelist=usermaster.role.split(", ")
     nav=dynamicnavbar(request,rolelist)
     if request.method == "POST":
         emp=request.POST.get('emp_id')
@@ -320,6 +441,8 @@ def forget_password(request):
 
 
 
+
+
 def forget_path(request):
     if request.method == "POST":
         option=request.POST.get('forget')
@@ -328,6 +451,8 @@ def forget_path(request):
         else:
             return redirect('forget_password_path')
     return render(request,'forget_password_path.html',{})
+
+
 
 
 
