@@ -163,11 +163,10 @@ def create(request):
         sublevelrole=request.POST.getlist('sublevel')
         sublevelrolelist= ", ".join(sublevelrole)
         password="dlw@123"
-<<<<<<< HEAD
+
         if role in "Superuser" and emp_id and role:
 =======
-        if "Superuser" in sublevelrole and emp_id and role and sublevelrole:
->>>>>>> me
+            if "Superuser" in sublevelrole and emp_id and role and sublevelrole:
             employee=user_master.objects.filter(emp_id=emp_id).first()
             employee.role=sublevelrolelist
             employee.parent=role
@@ -182,7 +181,6 @@ def create(request):
         elif role not in "Superuser" and emp_id and role:
 =======
         elif "Superuser" not in sublevelrole and emp_id and role and sublevelrole:
->>>>>>> me
             employee=user_master.objects.filter(emp_id=emp_id).first()
             employee.role=sublevelrolelist
             employee.parent=role
@@ -208,8 +206,6 @@ def create(request):
 
 
 
-<<<<<<< HEAD
-=======
 
     
 
@@ -295,7 +291,6 @@ def update_permission_incharge(request):
 
 
 
->>>>>>> me
 def getEmpInfo(request):
     if request.method == "GET" and request.is_ajax():
         emp_id=request.GET.get('username')
