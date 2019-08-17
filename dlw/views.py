@@ -59,6 +59,8 @@ def login_request(request):
 
 
 
+
+
 def get_client_ip(request):
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
     if x_forwarded_for:
@@ -71,6 +73,9 @@ def get_client_ip(request):
 
 
 
+
+
+
 @login_required
 def logout_request(request):
     if request.method=='POST':
@@ -78,6 +83,9 @@ def logout_request(request):
         data={}
         return JsonResponse(data)
     return HttpResponseRedirect('login')
+
+
+
 
 
 
@@ -97,6 +105,8 @@ def homeadmin(request):
         'ip':get_client_ip(request),
     }
     return render(request,'homeadmin.html',context)
+
+
 
 
 
@@ -123,6 +133,9 @@ def homeuser(request):
 
 
 
+
+
+
 @login_required
 def dynamicnavbar(request,rolelist=[]):
     if("Superuser" in rolelist):
@@ -131,6 +144,9 @@ def dynamicnavbar(request,rolelist=[]):
     else:
         nav=navbar.objects.filter(role__in=rolelist).values('navmenu','navitem','navsubitem','link').distinct()
         return nav
+
+
+
 
 
 
@@ -196,6 +212,8 @@ def create(request):
 
 
 
+
+
 @login_required
 @role_required(allowed_roles=["Superuser"])
 def update_permission(request):
@@ -229,6 +247,8 @@ def update_permission(request):
         'roles':availableroles
     }
     return render(request,'update_permission.html',context)
+
+
 
 
 
