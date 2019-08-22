@@ -12,7 +12,7 @@ from django.contrib.sessions.models import Session
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.views.generic import View
-from dlw.models import testc,navbar,user_master,roles
+from dlw.models import testc,navbar,user_master,roles,shift_history
 from dlw.serializers import testSerializer
 import re,uuid
 from django.contrib.auth.forms import UserCreationForm
@@ -291,6 +291,103 @@ def update_permission_incharge(request):
 
 
 
+
+@login_required
+@role_required(allowed_roles=["Wheel_shop_incharge","Bogie_shop_incharge"])
+def update_emp_shift(request):
+    cuser=request.user
+    usermaster=user_master.objects.filter(emp_id=cuser).first()
+    rolelist=usermaster.role.split(", ")
+    parentrole=roles.objects.all().filter(role__in=rolelist).first()
+    available=roles.objects.all().filter(parent=parentrole.parent).values('role').exclude(role__in=rolelist)
+    users=user_master.objects.all().filter(parent=parentrole.parent).values('emp_id').exclude(role__in=rolelist)
+    nav=dynamicnavbar(request,rolelist)
+    if request.method == "POST":
+        emp_shiftupdate=request.POST.get('emp_id')
+        shift=request.POST.get('shift')
+        if emp_shiftupdate and shift:
+            updateuser=user_master.objects.get(emp_id=emp_shiftupdate)
+            if updateuser.shift_id is None:
+                updateuser.shift_id=shift
+                updateuser.validity_from=date.today()
+                updateuser.save()
+                messages.success(request, 'Successfully Updated!')
+                return redirect('update_emp_shift')
+            else:
+                newhistory=shift_history.objects.create()
+                newhistory.emp_id=updateuser.emp_id
+                newhistory.shift_id=updateuser.shift_id
+                newhistory.validity_from=updateuser.validity_from
+                newhistory.validity_to=date.today()
+                newhistory.save()
+                updateuser.shift_id=shift
+                updateuser.validity_from=date.today()
+                updateuser.save()
+                messages.success(request, 'Successfully Updated!')
+                return redirect('update_emp_shift')
+        else:
+            messages.error(request,"Error!")
+            return redirect('update_emp_shift')
+    context={
+        'users':users,
+        'nav':nav,
+        'ip':get_client_ip(request),
+        'usermaster':usermaster,
+    }
+    return render(request,'update_emp_shift.html',context)
+
+
+
+
+
+@login_required
+@role_required(allowed_roles=["Superuser"])
+def update_emp_shift_admin(request):
+    cuser=request.user
+    usermaster=user_master.objects.filter(emp_id=cuser).first()
+    rolelist=usermaster.role.split(", ")
+    nav=dynamicnavbar(request,rolelist)
+    parentshops=roles.objects.all().distinct().values('parent').exclude(parent='Superuser')
+    if request.method=="POST":
+        emp_shiftupdate=request.POST.get('emp_id')
+        shift=request.POST.get('shift')
+        if emp_shiftupdate and shift:
+            updateuser=user_master.objects.get(emp_id=emp_shiftupdate)
+            if updateuser.shift_id is None:
+                updateuser.shift_id=shift
+                updateuser.validity_from=date.today()
+                updateuser.save()
+                messages.success(request, 'Successfully Updated!')
+                return redirect('update_emp_shift_admin')
+            else:
+                newhistory=shift_history.objects.create()
+                newhistory.emp_id=updateuser.emp_id
+                newhistory.shift_id=updateuser.shift_id
+                newhistory.validity_from=updateuser.validity_from
+                newhistory.validity_to=date.today()
+                newhistory.save()
+                updateuser.shift_id=shift
+                updateuser.validity_from=date.today()
+                updateuser.save()
+                messages.success(request, 'Successfully Updated!')
+                return redirect('update_emp_shift_admin')
+        else:
+            messages.error(request,"Error!")
+            return redirect('update_emp_shift_admin')
+    context={
+        'nav':nav,
+        'ip':get_client_ip(request),
+        'parentshops':parentshops,
+    }
+    return render(request,'update_emp_shift_admin.html',context)
+
+
+
+
+
+
+
+
 def getEmpInfo(request):
     if request.method == "GET" and request.is_ajax():
         emp_id=request.GET.get('username')
@@ -303,7 +400,8 @@ def getEmpInfo(request):
             "designation":emp.designation,
             "department":emp.department,
             "email":emp.email,
-            "contactno":emp.contactno
+            "contactno":emp.contactno,
+            "currentshift":emp.shift_id
         }
         return JsonResponse({"emp_info":emp_info}, status=200)
 
@@ -363,6 +461,19 @@ def getPermissionInfo(request):
 
 
 
+
+
+def getshopempinfo(request):
+    if request.method == "GET" and request.is_ajax():
+        shop=request.GET.get('username')
+        usermaster=user_master.objects.filter(parent=shop).values('emp_id')
+        print(usermaster)
+        neededusers=list(usermaster.values('emp_id'))
+        shopemp_info={
+            "neededusers":neededusers,
+            }
+        return JsonResponse({"shopemp_info":shopemp_info}, status=200)
+    return JsonResponse({"success":False}, status=400)
 
 
 

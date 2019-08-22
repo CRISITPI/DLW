@@ -19,11 +19,23 @@ class user_master(models.Model):
     emp_id=models.CharField(max_length=15,primary_key=True)
     role=models.CharField(max_length=500,null=True)
     parent=models.CharField(max_length=50,null=True)
+    shift_id=models.CharField(max_length=50,null=True)
+    validity_from=models.CharField(max_length=30,null=True)
     name=models.CharField(max_length=50,null=True)
     designation=models.CharField(max_length=50,null=True)
     department=models.CharField(max_length=50,null=True)
     email=models.CharField(max_length=50,null=True)
     contactno=models.CharField(null=True,max_length=10)
+
+
+
+class shift_history(models.Model):
+    emp_id=models.CharField(max_length=15,null=True)
+    shift_id=models.CharField(max_length=50,null=True)
+    validity_from=models.CharField(max_length=30,null=True)
+    validity_to=models.CharField(max_length=30,null=True)
+
+
 
 class roles(models.Model):
     role=models.CharField(primary_key=True,max_length=50)
