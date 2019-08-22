@@ -496,14 +496,30 @@ def delete_user(request):
             messages.error(request,"Error, No user selected!")
             return redirect('delete_user')
         usermasterupdate=user_master.objects.filter(emp_id=delete.username).first()
-        usermasterupdate.role=None
-        usermasterupdate.parent=None
-        usermasterupdate.shift_id=None
-        usermasterupdate.validity_from=None
-        delete.delete()
-        usermasterupdate.save()
-        messages.success(request, 'Successfully Deleted!')
-        return redirect('delete_user')
+        if usermasterupdate.shift_id is not None:
+            newhistory=shift_history.objects.create()
+            newhistory.emp_id=usermasterupdate.emp_id
+            newhistory.shift_id=usermasterupdate.shift_id
+            newhistory.validity_from=usermasterupdate.validity_from
+            newhistory.validity_to=date.today()
+            newhistory.save()
+            usermasterupdate.role=None
+            usermasterupdate.parent=None
+            usermasterupdate.shift_id=None
+            usermasterupdate.validity_from=None
+            delete.delete()
+            usermasterupdate.save()
+            messages.success(request, 'Successfully Deleted!')
+            return redirect('delete_user')
+        else:
+            usermasterupdate.role=None
+            usermasterupdate.parent=None
+            usermasterupdate.shift_id=None
+            usermasterupdate.validity_from=None
+            delete.delete()
+            usermasterupdate.save()
+            messages.success(request, 'Successfully Deleted!')
+            return redirect('delete_user')
     context={
         'users':users,
         'nav':nav,
