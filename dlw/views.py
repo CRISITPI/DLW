@@ -498,6 +498,8 @@ def delete_user(request):
         usermasterupdate=user_master.objects.filter(emp_id=delete.username).first()
         usermasterupdate.role=None
         usermasterupdate.parent=None
+        usermasterupdate.shift_id=None
+        usermasterupdate.validity_from=None
         delete.delete()
         usermasterupdate.save()
         messages.success(request, 'Successfully Deleted!')
