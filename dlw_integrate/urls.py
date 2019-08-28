@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from dlw.views import getshopempinfo,update_emp_shift_admin,update_emp_shift,update_permission_incharge,update_permission,getPermissionInfo,login_request,logout_request,homeadmin,create,homeuser,ChartData,dynamicnavbar,getEmpInfo,delete_user,forget_password,forget_path,getauthempInfo
+from dlw.views import shiftsave,test,getshopempinfo,update_emp_shift_admin,update_emp_shift,update_permission_incharge,update_permission,getPermissionInfo,login_request,logout_request,homeadmin,create,homeuser,ChartData,dynamicnavbar,getEmpInfo,delete_user,forget_password,forget_path,getauthempInfo
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
@@ -38,6 +38,7 @@ urlpatterns = [
     path('ajax/get_permission_info/',getPermissionInfo,name='get_permission_info'),
     path('ajax/get_auth_emp_info/',getauthempInfo,name='get_auth_emp_info'),
     path('ajax/get_shopemp_info/',getshopempinfo,name='get_shopemp_info'),
+    path('ajax/shiftsave/',shiftsave,name='shiftsave'),
     path('delete_user/',delete_user,name='delete_user'),
     path('forget_password/', forget_password, name='forget_password'),
     path('forget_password_path/',forget_path,name='forget_password_path'),
@@ -45,4 +46,5 @@ urlpatterns = [
     path('update_permission_incharge/',update_permission_incharge,name='update_permission_incharge'),
     path('update_emp_shift/',update_emp_shift,name='update_emp_shift'),
     path('update_emp_shift_admin/',update_emp_shift_admin,name='update_emp_shift_admin'),
+    path('test/',test,name='test'),
 ]

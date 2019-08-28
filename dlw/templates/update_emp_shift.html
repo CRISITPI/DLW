@@ -14,75 +14,95 @@
                 </ul>
         {% endif %}
 </center>
-<center>
-<form method="POST">{%csrf_token%}
-   <div class="col-4">
-   <br>
-   	<label>Select Employee-Id to Update</label>
-     
-   	<select class="form-control" id = "users" name="emp_id" required>
-     <option selected disabled hidden>Select Employee Id</option>
-   		{% for uname in users %}
-   			<option value = {{uname.emp_id}}>{{uname.emp_id}}</option>
-   		{% endfor %}
-   	</select><br>
-	    Current Shift<input type="text" id="currentshift" class="form-control" readonly><br>
-	
 
-        
-       <label>Choose Shift</label>
-       <select class="form-control" name="shift" required>
-	   <option selected disabled hidden>Select Shift</option>
-		<option>General Day</option>
-        <option>General Night</option>
-        <option>Shift A</option>
-        <option>Shift B</option>
-        <option>Shift C</option>
-   	</select><br>
-</div><br>
-   <div class="col-12" id = "user_info">
-   	<hr>
-   	<table class="table table-stripped table-fixed">
-		<thead>
-			<tr>
-				<td>Name</td>
-				<td>Designation</td>
-				<td>Department</td>
-				<td>Contact-no</td>
-			</tr>
-		</thead>
-   		<tbody>
-   		</tbody>
-   	</table>
-   </div>
-   <br>
-        <center><button type="submit" class="button button2">Update</button><br></center>
-       
+
+<form method="POST" style="margin:0 auto;width:80%;">{%csrf_token%}
+<br>
+    <div class="row">
+   			<div class="col">
+				<input type="text" id="myInput" style="width:100%;" onkeyup="myFunction()" placeholder="Search for Employee ID.." class="form-control">
+			</div>
+			<div class="col">
+				<input type="date" id="datepic" style="width:50%;" class="form-control" id="dateinput" required>
+			</div>
+	</div>
+	<br>
+	<div class="row">
+			<table class="table table-striped" id="myTable">
+				<thead>
+					<th scope="col">#</th>
+					<th scope="col">Employee Id</th>
+					<th scope="col">Name</th>
+					<th scope="col">Shift</th>
+				</thead>
+				<tbody>
+					{% for emp in users %}
+					<tr>
+						<th scope="row">{{forloop.counter}}</th>
+						
+						<td id='emp_id{{forloop.counter}}' name="emp_id" value={{emp.emp_id}}>{{ emp.emp_id }}</td>
+						<td>{{ emp.name }}</td>
+						<td>
+							General Day &nbsp;<input type="radio" disabled name="radio{{forloop.counter}}" value="General Day" id="input1">&nbsp; &nbsp;
+  							General Night &nbsp;<input type="radio" disabled name="radio{{forloop.counter}}" value="General Night" id="input2">&nbsp; &nbsp;
+  							Shift 1 &nbsp;<input type="radio" disabled name="radio{{forloop.counter}}" value="Shift 1" id="input3">&nbsp; &nbsp;
+							Shift 2 &nbsp;<input type="radio" disabled name="radio{{forloop.counter}}" value="Shift 2" id="input4">&nbsp; &nbsp;
+							Shift 3 &nbsp;<input type="radio" disabled name="radio{{forloop.counter}}" value="Shift 3" id="input5">
+						</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+	</div>
+	{% comment %} <div class="row">
+		<div class="col-md-6 offset-5">
+        	<button type="submit" class="button button2">Create</button>
+		</div>
+	</div> {% endcomment %}
 </form>
 
-<br>
-
-</center>
-
 <script type="text/javascript">
+function myFunction() {
+  var input, filter, table, tr, td, i, txtValue;
+  input = document.getElementById("myInput");
+  filter = input.value.toUpperCase();
+  table = document.getElementById("myTable");
+  tr = table.getElementsByTagName("tr");
+  for (i = 0; i < tr.length; i++) {
+    td = tr[i].getElementsByTagName("td")[0];
+    if (td) {
+      txtValue = td.textContent || td.innerText;
+      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        tr[i].style.display = "";
+      } else {
+        tr[i].style.display = "none";
+      }
+    }       
+  }
+}
+
 $(document).ready(function(){
-   $("#users").change(function(e){
+   $("#datepic").change(function(e){
+	e.preventDefault();
+	$("#input1,#input2,#input3,#input4,#input5").removeAttr('disabled');
+   })
+   $("#input1,#input2,#input3,#input4,#input5").change(function(e){
    	e.preventDefault();
-   	var username = $(this).val();
-   	var data = {username};
+   	var shift = $(this).val();
+	var shiftnameattr=$(this).attr("name")
+	var res=shiftnameattr.split("radio")
+	var emp = $("#emp_id"+res[1]).text();
+	var seldate = $("#datepic").val();
+	console.log(emp)
+	console.log(shift)
+	console.log(seldate)
+   	var data = {shift,emp,seldate};
        	$.ajax({
    		type : 'GET',
-   		url :  "{% url 'get_emp_info' %}",
+   		url :  "{% url 'shiftsave' %}",
         dataType : 'json',
-   		data : data,
+   		data: data,
    		success : function(response){
-   			$("#user_info table tbody").html(`<tr>
-   				<td name="name">${response.emp_info.name}</td>
-   				<td name="designation">${response.emp_info.designation}</td>
-   				<td name="department">${response.emp_info.department}</td>
-   				<td name="contactno">${response.emp_info.contactno}</td>
-   				</tr>`);
-			$("#currentshift").val(`${response.emp_info.currentshift}`);
    		},
    		error : function(response){
    		}

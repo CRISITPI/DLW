@@ -42,69 +42,71 @@ footer, .page-content::after{
 }
 </style>
 <body>
+{% include 'navbar.html' %}
 
-<center>
-<form method="POST" style="margin:0 auto;width:80%;display:block;">{%csrf_token%}
-        <div class="row justify-content-center align-items-center">
-   <div class="col-4">
-   	<label>Select Employee Id - </label>
-   	<select class="form-control" id = "users" name="emp_id">
-   		{% for uname in emp %}
-   			<option value = {{uname.emp_id}}>{{uname.emp_id}}</option>
-   		{% endfor %}
-   	</select>
-       <label>Select Role - </label>
-       <select class="form-control" name="role">
-   			<option value="Superuser">Superuser</option>
-               <option value="Bogie">Bogie</option>
-               <option value="Wheel">Wheel</option>
-   	</select>
-   </div>
-   <div class="col-9" id = "user_info">
-   	<hr />
-   	<table class="table table-stripped table-fixed">
-		<thead>
-			<tr>
-				<td name="name">Name</td>
-				<td name="designation">Designation</td>
-				<td name="department">Department</td>
-				<td name="email">Email</td>
-				<td name="contactno">Contact-no</td>
-			</tr>
-		</thead>
-   		<tbody>
-   		</tbody>
-   	</table>
-   </div>
-   </div>
-        <button type="submit" class="button button2">Create</button>
+<form method="POST" style="margin:0 auto;width:80%;">{%csrf_token%}
+<br>
+    <div class="row">
+   			<div class="col">
+				<input type="text" id="myInput" style="width:100%;" onkeyup="myFunction()" placeholder="Search for Employee ID.." class="form-control">
+			</div>
+	</div>
+	<br>
+	<div class="row">
+			<table class="table table-striped" id="myTable">
+				<thead>
+					<th scope="col">#</th>
+					<th scope="col">Employee Id</th>
+					<th scope="col">Name</th>
+					<th scope="col">Shift</th>
+				</thead>
+				<tbody>
+					{% for emp in employee %}
+					<tr>
+						<th scope="row">{{forloop.counter}}</th>
+						<td>{{ emp.emp_id }}</td>
+						<td>{{ emp.name }}</td>
+						<td>
+						{% comment %} <fieldset id="group"> {% endcomment %}
+							General Day &nbsp;<input type="radio" name="radio{{forloop.counter}}" value="General Day">&nbsp; &nbsp;
+  							General Night &nbsp;<input type="radio" name="radio{{forloop.counter}}" value="General Night">&nbsp; &nbsp;
+  							Shift 1 &nbsp;<input type="radio" name="radio{{forloop.counter}}" value="Shift 1">&nbsp; &nbsp;
+							Shift 2 &nbsp;<input type="radio" name="radio{{forloop.counter}}" value="Shift 2">&nbsp; &nbsp;
+							Shift 3 &nbsp;<input type="radio" name="radio{{forloop.counter}}" value="Shift 3">
+						{% comment %} </fieldset> {% endcomment %}
+						</td>
+
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+	</div>
+	<div class="row">
+		<div class="col-md-6 offset-5">
+        	<button type="submit" class="button button2">Create</button>
+		</div>
+	</div>
 </form>
-</center>
+
 <script type="text/javascript">
-$(document).ready(function(){
-   $("#users").change(function(e){
-   	e.preventDefault();
-   	var username = $(this).val();
-   	var data = {username};
-       	$.ajax({
-   		type : 'GET',
-   		url :  "{% url 'get_emp_info' %}",
-        dataType : 'json',
-   		data : data,
-   		success : function(response){
-   			$("#user_info table tbody").html(`<tr>
-   				<td name="name">${response.emp_info.name}</td>
-   				<td name="designation">${response.emp_info.designation}</td>
-   				<td name="department">${response.emp_info.department}</td>
-   				<td name="email">${response.emp_info.email}</td>
-   				<td name="contactno">${response.emp_info.contactno}</td>
-   				</tr>`)
-   		},
-   		error : function(response){
-   		}
-   	})
-})
-})
+function myFunction() {
+  var input, filter, table, tr, td, i, txtValue;
+  input = document.getElementById("myInput");
+  filter = input.value.toUpperCase();
+  table = document.getElementById("myTable");
+  tr = table.getElementsByTagName("tr");
+  for (i = 0; i < tr.length; i++) {
+    td = tr[i].getElementsByTagName("td")[0];
+    if (td) {
+      txtValue = td.textContent || td.innerText;
+      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        tr[i].style.display = "";
+      } else {
+        tr[i].style.display = "none";
+      }
+    }       
+  }
+}
 </script>
 </body>
 </html>

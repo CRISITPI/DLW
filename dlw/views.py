@@ -292,6 +292,68 @@ def update_permission_incharge(request):
 
 
 
+# @login_required
+# @role_required(allowed_roles=["Wheel_shop_incharge","Bogie_shop_incharge"])
+# def update_emp_shift(request):
+#     cuser=request.user
+#     usermaster=user_master.objects.filter(emp_id=cuser).first()
+#     rolelist=usermaster.role.split(", ")
+#     parentrole=roles.objects.all().filter(role__in=rolelist).first()
+#     users=user_master.objects.all().filter(parent=parentrole.parent).exclude(role__in=rolelist)
+#     nav=dynamicnavbar(request,rolelist)
+#     total=users.count()+1
+#     cnt=0
+#     temp="radio"
+#     if request.method == "POST":
+#         namelist=[]
+#         shiftlist={}
+#         for j in range(1,total):
+#             temp=temp+str(j)
+#             namelist.append(temp)
+#             temp="radio"
+#         for key in request.POST:
+#             for temp in namelist:
+#                 if key==temp:
+#                     shiftlist[key]=request.POST[key]
+#         finallist={}
+#         for k,v in shiftlist.items():
+#             shiftlist1=k.split('radio')
+#             finallist[shiftlist1[1]]=v
+#         print(finallist)
+#         for k,v in finallist.items():
+#             print(k)
+#             user=users[int(k)-1].emp_id
+#             print(user)
+#             updateuser=user_master.objects.get(emp_id=user)
+#             print(updateuser)
+#             if updateuser.shift_id is None:
+#                 updateuser.shift_id=v
+#                 updateuser.validity_from=date.today()
+#                 updateuser.save()
+#                 cnt=cnt+1
+#             else:
+#                 newhistory=shift_history.objects.create()
+#                 newhistory.emp_id=updateuser.emp_id
+#                 newhistory.shift_id=updateuser.shift_id
+#                 newhistory.validity_from=updateuser.validity_from
+#                 newhistory.validity_to=date.today()
+#                 newhistory.save()
+#                 updateuser.shift_id=v
+#                 updateuser.validity_from=date.today()
+#                 updateuser.save()
+#                 cnt=cnt+1
+#         if cnt==total-1:
+#             messages.success(request, 'Successfully Updated!')
+#             return redirect('update_emp_shift')
+#     context={
+#         'users':users,
+#         'nav':nav,
+#         'ip':get_client_ip(request),
+#     }
+#     return render(request,'update_emp_shift.html',context)
+
+
+
 @login_required
 @role_required(allowed_roles=["Wheel_shop_incharge","Bogie_shop_incharge"])
 def update_emp_shift(request):
@@ -299,42 +361,46 @@ def update_emp_shift(request):
     usermaster=user_master.objects.filter(emp_id=cuser).first()
     rolelist=usermaster.role.split(", ")
     parentrole=roles.objects.all().filter(role__in=rolelist).first()
-    available=roles.objects.all().filter(parent=parentrole.parent).values('role').exclude(role__in=rolelist)
-    users=user_master.objects.all().filter(parent=parentrole.parent).values('emp_id').exclude(role__in=rolelist)
+    users=user_master.objects.all().filter(parent=parentrole.parent).exclude(role__in=rolelist)
     nav=dynamicnavbar(request,rolelist)
-    if request.method == "POST":
-        emp_shiftupdate=request.POST.get('emp_id')
-        shift=request.POST.get('shift')
-        if emp_shiftupdate and shift:
-            updateuser=user_master.objects.get(emp_id=emp_shiftupdate)
+    print(date.today())
+    context={
+        'users':users,
+        'nav':nav,
+        'ip':get_client_ip(request),
+    }
+    return render(request,'update_emp_shift.html',context)
+
+
+
+
+
+
+def shiftsave(request):
+    if request.method=="GET" and request.is_ajax():
+        shift=request.GET.get('shift')
+        emp_id=request.GET.get('emp')
+        datetosave=request.GET.get('seldate')
+        if emp_id and shift and datetosave:
+            updateuser=user_master.objects.get(emp_id=emp_id)
+            print(updateuser)
             if updateuser.shift_id is None:
                 updateuser.shift_id=shift
-                updateuser.validity_from=date.today()
+                updateuser.validity_from=datetosave
                 updateuser.save()
-                messages.success(request, 'Successfully Updated!')
-                return redirect('update_emp_shift')
             else:
                 newhistory=shift_history.objects.create()
                 newhistory.emp_id=updateuser.emp_id
                 newhistory.shift_id=updateuser.shift_id
                 newhistory.validity_from=updateuser.validity_from
-                newhistory.validity_to=date.today()
+                newhistory.validity_to=datetosave
                 newhistory.save()
                 updateuser.shift_id=shift
-                updateuser.validity_from=date.today()
+                updateuser.validity_from=datetosave
                 updateuser.save()
-                messages.success(request, 'Successfully Updated!')
-                return redirect('update_emp_shift')
-        else:
-            messages.error(request,"Error!")
-            return redirect('update_emp_shift')
-    context={
-        'users':users,
-        'nav':nav,
-        'ip':get_client_ip(request),
-        'usermaster':usermaster,
-    }
-    return render(request,'update_emp_shift.html',context)
+    data={}
+    return JsonResponse(data)
+
 
 
 
@@ -388,6 +454,8 @@ def update_emp_shift_admin(request):
 
 
 
+
+
 def getEmpInfo(request):
     if request.method == "GET" and request.is_ajax():
         emp_id=request.GET.get('username')
@@ -406,6 +474,7 @@ def getEmpInfo(request):
         return JsonResponse({"emp_info":emp_info}, status=200)
 
     return JsonResponse({"success":False}, status=400)
+
 
 
 
@@ -447,6 +516,8 @@ def getauthempInfo(request):
 
 
 
+
+
 def getPermissionInfo(request):
     if request.method == "GET" and request.is_ajax():
         selectrole=request.GET.get('username')
@@ -457,6 +528,10 @@ def getPermissionInfo(request):
         }
         return JsonResponse({"permission_info":permission_info}, status=200)
     return JsonResponse({"success":False}, status=400)
+
+
+
+
 
 
 
@@ -474,6 +549,11 @@ def getshopempinfo(request):
             }
         return JsonResponse({"shopemp_info":shopemp_info}, status=200)
     return JsonResponse({"success":False}, status=400)
+
+
+
+
+
 
 
 
@@ -588,3 +668,20 @@ class ChartData(APIView):
         obj= testc.objects.all()
         serializer=testSerializer(obj,many=True)
         return Response(serializer.data)
+
+
+
+
+def test(request):
+    employee=user_master.objects.all().filter(parent="Wheel")
+    print(employee.count())
+    temp="radio"
+    if request.method=="POST":
+        print(request.POST.get('radio1'))
+        print(request.POST.get('radio2'))
+        print(employee[0])
+
+    context={
+        'employee':employee,
+    }
+    return render(request,'test.html',context)
