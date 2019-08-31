@@ -12,7 +12,7 @@ from django.contrib.sessions.models import Session
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.views.generic import View
-from dlw.models import testc,navbar,user_master,roles,shift_history
+from dlw.models import testc,navbar,user_master,roles,shift_history,shift
 from dlw.serializers import testSerializer
 import re,uuid
 from django.contrib.auth.forms import UserCreationForm
@@ -363,11 +363,26 @@ def update_emp_shift(request):
     parentrole=roles.objects.all().filter(role__in=rolelist).first()
     users=user_master.objects.all().filter(parent=parentrole.parent).exclude(role__in=rolelist)
     nav=dynamicnavbar(request,rolelist)
-    print(date.today())
+    now=datetime.datetime.now() + datetime.timedelta(days=7)
+    stringdate=str(now.date())
+    movetohistory=shift.objects.all().filter(validity_from__lt=date.today())
+    movecount=movetohistory.count()
+    yesterday=datetime.datetime.now() - datetime.timedelta(days=1)
+    for i in range(movecount):
+        shiftcount=shift.objects.get(emp_id=movetohistory[i].emp_id).count()
+        if shiftcount>1:
+            newhistory=shift_history.objects.create()
+            newhistory.emp_id=movetohistory[i].emp_id
+            newhistory.shift_id=movetohistory[i].shift_id
+            newhistory.validity_from=movetohistory[i].validity_from
+            newhistory.validity_to=yesterday
+            newhistory.save()
+            movetohistory[i].delete()
     context={
         'users':users,
         'nav':nav,
         'ip':get_client_ip(request),
+        'future':stringdate,
     }
     return render(request,'update_emp_shift.html',context)
 
@@ -378,26 +393,26 @@ def update_emp_shift(request):
 
 def shiftsave(request):
     if request.method=="GET" and request.is_ajax():
-        shift=request.GET.get('shift')
+        shiftemp=request.GET.get('shift')
         emp_id=request.GET.get('emp')
         datetosave=request.GET.get('seldate')
-        if emp_id and shift and datetosave:
-            updateuser=user_master.objects.get(emp_id=emp_id)
-            print(updateuser)
-            if updateuser.shift_id is None:
-                updateuser.shift_id=shift
-                updateuser.validity_from=datetosave
-                updateuser.save()
-            else:
-                newhistory=shift_history.objects.create()
-                newhistory.emp_id=updateuser.emp_id
-                newhistory.shift_id=updateuser.shift_id
-                newhistory.validity_from=updateuser.validity_from
-                newhistory.validity_to=datetosave
-                newhistory.save()
-                updateuser.shift_id=shift
-                updateuser.validity_from=datetosave
-                updateuser.save()
+        datetosaveformatdate = datetime.datetime.strptime(datetosave, "%Y-%m-%d") 
+        if datetosaveformatdate.date() == date.today():
+            if emp_id and shiftemp and datetosave:
+                updateuser=shift.objects.filter(emp_id=emp_id).count()
+                if updateuser==0:
+                    update=shift.objects.create()
+                    update.emp_id=emp_id
+                    update.shift_id=shiftemp
+                    update.validity_from=datetosave
+                    update.save()
+                else:
+                    up=shift.objects.filter(emp_id=emp_id).update(shift_id=shiftemp,validity_from=datetosave)
+        elif datetosaveformatdate.date() < date.today():
+            if emp_id and shiftemp and datetosave:
+                updateuser=shift.objects.filter(emp_id=emp_id).count()
+                
+
     data={}
     return JsonResponse(data)
 
@@ -469,7 +484,6 @@ def getEmpInfo(request):
             "department":emp.department,
             "email":emp.email,
             "contactno":emp.contactno,
-            "currentshift":emp.shift_id
         }
         return JsonResponse({"emp_info":emp_info}, status=200)
 

@@ -23,7 +23,7 @@
 				<input type="text" id="myInput" style="width:100%;" onkeyup="myFunction()" placeholder="Search for Employee ID.." class="form-control">
 			</div>
 			<div class="col">
-				<input type="date" id="datepic" style="width:50%;" class="form-control" id="dateinput" required>
+				<input type="date" max="{{future}}" id="datepic" style="width:50%;" class="form-control" onchange="TDate()" required>
 			</div>
 	</div>
 	<br>
@@ -81,11 +81,22 @@ function myFunction() {
   }
 }
 
+function TDate() {
+    var UserDate = document.getElementById("datepic").value;
+    var ToDate = new Date();
+
+    if (new Date(UserDate).getTime() > ToDate.getTime()) {
+          $("#input1,#input2,#input3,#input4,#input5").removeAttr('disabled');
+		  return true;
+     }
+	if (new Date(UserDate).getTime() <= ToDate.getTime()) {
+		continue;
+     }
+}
+
 $(document).ready(function(){
-   $("#datepic").change(function(e){
-	e.preventDefault();
-	$("#input1,#input2,#input3,#input4,#input5").removeAttr('disabled');
-   })
+
+
    $("#input1,#input2,#input3,#input4,#input5").change(function(e){
    	e.preventDefault();
    	var shift = $(this).val();
@@ -93,9 +104,6 @@ $(document).ready(function(){
 	var res=shiftnameattr.split("radio")
 	var emp = $("#emp_id"+res[1]).text();
 	var seldate = $("#datepic").val();
-	console.log(emp)
-	console.log(shift)
-	console.log(seldate)
    	var data = {shift,emp,seldate};
        	$.ajax({
    		type : 'GET',
