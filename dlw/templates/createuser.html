@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 {% block content %}
+
 <br>
+<center><h3>Add User</h3></center>
 <center>
 {% if messages %}
                 <ul class="messages">
@@ -18,7 +20,6 @@
 <form method="POST">{%csrf_token%}
 
    <div class="col-4">
-   <br>
 
 
 
@@ -38,10 +39,7 @@
 
        <label>Select Parent</label>
        <select class="form-control" name="role" id="role" required>
-	   <option selected disabled hidden>Select Parent</option>
-   			{% for role in roles %}
-   			<option value = {{role.parent}}>{{role.parent}}</option>
-   		{% endfor %}
+	   <option id="roleop" selected disabled hidden>Select Parent</option>
    	</select><br>
 
 
@@ -101,7 +99,6 @@
 <br>
 
 <script type="text/javascript">
-$(document).ready(function(){
    $("#users").change(function(e){
    	e.preventDefault();
    	var username = $(this).val();
@@ -112,6 +109,22 @@ $(document).ready(function(){
         dataType : 'json',
    		data : data,
    		success : function(response){
+			var elementsadded = document.querySelectorAll(".newparent");
+            if(elementsadded.length>0){
+              var elementsaddedarr = Array.from(elementsadded);
+            elementsaddedarr.forEach((el)=> el.remove());
+            document.querySelector("#roleop").selected = true;
+            }
+			var brarr,mystr,html;
+			parentarr = response.emp_info.uniqparent.map((ele)=>ele.parent);
+			mystr = "";
+            parentarr.forEach((el,index)=>{
+              html = `<option class="newparent">${parentarr[index]}</option>`
+              mystr = html.concat(mystr);
+            });
+			html = "";
+            document.querySelector("#role").insertAdjacentHTML('beforeend',mystr);
+            mystr="";
    			$("#user_info table tbody").html(`<tr>
    				<td name="name">${response.emp_info.name}</td>
    				<td name="designation">${response.emp_info.designation}</td>
@@ -123,7 +136,6 @@ $(document).ready(function(){
    		error : function(response){
    		}
    	})
-})
 })
 
 

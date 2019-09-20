@@ -9,8 +9,6 @@
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="collapse_target">
-    <a class="navbar-brand"><img src="{% static 'dlw/images/Indian_Railway1.svg.png' %}"></a>
-    <span class="navbar-text">Diesel Locomotive Works, Varanasi</span>
     
     <ul class="navbar nav" style="width:100%;">
         <li class="navbar-item dropdown">
@@ -18,20 +16,41 @@
             Add
             <span class="caret"></span>
             <div class="dropdown-menu" aria-labelledby="dropdown_target">
-                <a class="dropdown-item">Annual</a>
-                <a class="dropdown-item">Monthly</a>
-                <a class="dropdown-item">Daily</a>
+                {% for menu in nav %}
+            {% if menu.navmenu in "Add" %}
+                <a class="dropdown-item" href="{{menu.link}}">{{menu.navitem}}</a>
+            {% endif %}
+            {% endfor %}
             </div>
             </a>
         </li>
+    <li class="navbar-item dropdown">
+            <a class="navbar-link dropdown-toggle" data-toggle="dropdown" data-target="dropdown_target" href="#" style="font-size:16px;color:#ffffff;">
+            Report
+            <span class="caret"></span>
+            <div class="dropdown-menu" aria-labelledby="dropdown_target">
+                {% for menu in nav %}
+            {% if menu.navmenu in "Report" %}
+                <a class="dropdown-item" href="{{menu.link}}">{{menu.navitem}}</a>
+            {% endif %}
+            {% endfor %}
+            </div>
+            </a>
+        </li>
+
+
+
+
         <li class="navbar-item dropdown">
             <a class="navbar-link dropdown-toggle" data-toggle="dropdown" data-target="dropdown_target" href="#" style="font-size:16px;color:#ffffff;">
             Dashboard
             <span class="caret"></span>
             <div class="dropdown-menu" aria-labelledby="dropdown_target">
-                <a class="dropdown-item">First</a>
-                <a class="dropdown-item">Second</a>
-                <a class="dropdown-item">Third</a>
+                  {% for menu in nav %}
+            {% if menu.navmenu in "Dashboard" %}
+                <a class="dropdown-item" href="{{menu.link}}">{{menu.navitem}}</a>
+            {% endif %}
+            {% endfor %}
             </div>
             </a>
         </li>
@@ -40,9 +59,11 @@
             Production
             <span class="caret"></span>
             <div class="dropdown-menu" aria-labelledby="dropdown_target">
-                <a class="dropdown-item">First</a>
-                <a class="dropdown-item">Second</a>
-                <a class="dropdown-item">Third</a>
+                {% for menu in nav %}
+            {% if menu.navmenu in "Production" %}
+                <a class="dropdown-item" href="{{menu.link}}">{{menu.navitem}}</a>
+            {% endif %}
+            {% endfor %}
             </div>
             </a>
         </li>

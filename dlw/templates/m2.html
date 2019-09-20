@@ -1,0 +1,298 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% load static %}
+
+<style>
+body {
+  font-family: Arial;
+}
+
+input[type=text], select {
+  width: 100%;
+  color: blue;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: block;
+  border: 0.5px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+input[type=submit]{
+  width: 20%;
+  text-align: center;
+  background-color: #4CAF50;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+input[type=submit]:hover {
+  background-color: #45a049;
+  text-align: center;
+
+}
+
+
+input[type=button]{
+  width: 5%;
+  text-align: center;
+  background-color: #4CAF50;
+  color: white;
+  padding: 6px 6px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+input[type=button]:hover {
+  background-color: #45a049;
+  text-align: center;
+
+}
+
+
+
+div.container {
+  border-radius: 5px;
+  background-color: #f2f2f2;
+  padding: 20px;
+}
+</style>
+<body>
+
+<h1 align="center" >M2-ROUTE CARD</h1>
+
+<form  action="." method="POST">  {%csrf_token%}
+<div class="container">
+<table><tr>
+    <td>
+    <label for="wk_ord_no">Work Order NO:/कार्यादेश सं. :</label>
+    <input type="text" id="wk_ord_no" name="wk_ord_no">
+    </td>
+    <td>
+    <label for="br_no">BR NO:/बी.आर.नंबर</label>
+    <input type="text" id="br_no" name="br_no" >
+    </td>
+    <td>
+    <label for="ord_type">Order Type:/आदेश टाइप:</label>
+    <input type="text" id="ord_type" name="ord_type" >
+    </td>
+    <td>
+    <label for="ltf">Loco(To):/लोको से :</label>
+    <input type="text" id="ltf" name="ltfe" >
+    </td>
+    <td>
+    <label for="ltf">Loco(From ):/लोको तक:</label>
+    <input type="text" id="ltfi" name="ltff">
+    </td>
+    <td>
+    <label for="m4ref">M4 Reference:/एम् ४ रिफरेन्स:</label>
+    <input type="text" id="m4ref" name="m4ref" >
+    </td>
+    <td>
+    <label for="docno">Document NO:/प्रलेख सं.:</label>
+    <input type="text" id="docno" name="docno">
+    </td>
+    <td>
+    <label for="date">Date:/तिथि:</label>
+    <input type="date" id="date" name="date">
+    </td>
+</tr></table>
+<table>
+<tr>
+    <td>
+    <label for="partno">Part NO:/पार्ट सं.:</label>
+    <input type="text" id="partno" name="partno">
+    </td>
+    <td>
+    <label for="partdes">Part Description:/पार्ट विवरण:</label>
+    <input type="text" id="partdes" name="partdes">
+    </td>
+    <td>
+    <label for="drno">Drawing NO:/ड्राइंग संख्या:</label>
+    <input type="text" id="drno" name="drno">
+    </td>
+    <td>
+    <label for="ordqty">Ordered QTY/आदेशित मात्रा :</label>
+    <input type="text" id="ordqty" name="ordqty">
+    </td>
+</tr></table>
+<table>
+<tr>
+    <td>
+    <label for="apn">Assembly Part NO/एसेम्ब्ली पार्ट संख्या:</label>
+    <input type="text" id="apn" name="apn">
+    </td>
+    <td>
+    <label for="ad">Assembly Description/एसेम्ब्ली विवरण:</label>
+    <input type="text" id="ad" name="ad">
+    </td>
+    <td>
+    <label for="rmpn">Raw Material Part NO/कच्चा माल पार्ट संख्या:</label>
+    <input type="text" id="rmpn" name="rmpn">
+    </td>
+    <td>
+    <label for="lwp">Length & WT/Piece / लम्बाई/वजन/प्रतीखण्ड :</label>
+    <input type="text" id="lwp" name="lwp">
+    </td>
+    <td>
+    <label for="tlwt">TOTAL Lenght/WT / कुल लम्बाई/वजन:</label>
+    <input type="text" id="tlwt" name="tlwt">
+    </td>
+    <td>
+    <label for="unit">Unit/इकाई:</label>
+    <input type="text" id="unit" name="unit">
+    </td>
+</tr></table>
+<table>
+<tr>
+    <td>
+    <label for="rmd">Raw Material Description/कच्चा माल विवरण:</label>
+    <input type="text" id="rmd" name="rmd">
+    </td>
+    <td>
+    <label for="csdno">Cut/Sheer Dye NO / कट/शियर डाय नं:</label>
+    <input type="text" id="csdno" name="csdno">
+    </td>
+    <td>
+    <label for="sw">Start Week/प्रा.सप्ताह :</label>
+    <input type="text" id="sw" name="sw">
+    </td>
+    <td>
+    <label for="ew">End Week/स.सप्ताह:</label>
+    <input type="text" id="ew" name="ew">
+    </td>
+    <td>
+    <label for="cc">Category Class/शे.क्ला.:</label>
+    <input type="text" id="cc" name="cc">
+    </td>
+</tr></table>
+<table>
+<tr>
+    <td>
+    <label for="id">Issue Date/निर्गम तिथि :</label>
+    <input type="date" id="id" name="id">
+    </td>
+    <td>
+    <label for="sk">Store Keeper/भंडारपाल :</label>
+    <input type="text" id="sk" name="sk">
+    </td>
+    <td>
+    <label for="rd">Received date/प्राप्ति तिथि :</label>
+    <input type="date" id="rd" name="rd">
+    </td>
+    <td>
+    <label for="sno">Shop NO/शॉप अधी.:</label>
+    <input type="text" id="sno" name="sno">
+    </td>
+</tr></table>
+   
+
+</div>
+<style>
+table, th, td {
+  border: 1px solid black;
+  height: 15px;
+}
+
+#myTable, th, td {
+  border: 1px solid black;
+  height: 10px;
+}
+
+</style>
+
+<input type="button" id="add" value="Add Operations" style="width: 150px;"/>
+<input type="hidden" name="num" value="THE OUTPUT OF OPERATION FUNCTION" id="myvalue"/>
+<div id="items">
+
+
+    </div>
+
+<br>
+    <br>
+
+<input type="submit" value="Submit/सबमिट" name="submit"/>
+
+
+
+
+
+</div>
+</form>
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+<script language="javascript">
+var j=0;
+$(document).ready(function(){
+    $("#add").click(function(e){
+        event.preventDefault()
+
+
+
+        j++;
+        console.log(j);
+        assign();
+
+        var ononame="ono"+String(j);
+        var ssegname="sseg"+String(j);
+        var lcname="lc"+String(j);
+        var optdescname="optdesc"+String(j);
+        var paname="pa"+String(j);
+        var taname="ta"+String(j);
+        var noname="no"+String(j);
+        var qtypname="qtyp"+String(j);
+        var qtyaname="qtya"+String(j);
+        var wkaname="wka"+String(j);
+        var matrejname="matrej"+String(j);
+        var sno=j;
+
+        if(j==1)
+        {
+            var happ='<div class="table-responsive"><table id="customers">'+'<tr><th style="width:3%" >Sr NO:</th><th >ऑपरेशन संख्या / OPERATION NO:</th>'+
+'<th>शॉप अनुभाग / Shop Sub-Section:</th><th>लोड सेंटर / Load Centre:</th><th>ऑपरेशन विवरण / OPERATION DESCRIPTION</th>'+
+    '<th>पी.ए. / PA:</th>'+
+    '<th>टी.ए. / TA:</th>'+
+    '<th>संख्या / NO:</th>'+
+    '<th>मात्रा उत्पा. / QTY Produced:</th>'+
+    '<th>मात्रा स्वीकृत / QTY Accepted:</th>'+
+    '<th>कामगार अस्वी. / Work Rejected:</th>'+
+    '<th>माल अस्वी. / Material Rejected:</th></tr>';
+
+    happ=happ+'</tr></table></div>';
+        $('#items').append(happ);
+
+        }
+var htAppend='<div><table id="customers"><tr><td style="width:3%">'+sno+'</td>'+'<td><input type="text" id="ono" name='+ononame+'></td>'+'<td><input type="text" id="sseg" name='+ssegname+'> </td>'+'<td><input type="text" id="lc" name='+lcname+'></td>'+'<td><input type="text" id="optdesc" name='+optdescname+'></td>'+'<td><input type="text" id="pa" name='+paname+'></td>'+'<td><input type="text" id="ta" name='+taname+'></td>'+'<td><input type="text" id="no" name='+noname+'></td>'+'<td><input type="text" id="qtyp" name='+qtypname+'></td>'+'<td><input type="text" id="qtya" name='+qtyaname+'></td>'+'<td><input type="text" id="wka" name='+wkaname+'></td>'+'<td><input type="text" id="matrej" name='+matrejname+'></td>';
+        htAppend=htAppend+'</tr></table></div>';
+
+
+
+     $('#items').append(htAppend);
+
+    });
+    $('body').on('click','#del',function(e){
+        $(this).parent('div').remove();
+    });
+
+});
+function assign(){
+        function operation()
+        {
+        console.log(j);
+        return j;
+        }
+       document.getElementById('myvalue').value =operation();
+    }
+  </script>
+
+{% endblock content %}

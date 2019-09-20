@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from dlw.views import shiftsave,test,getshopempinfo,update_emp_shift_admin,update_emp_shift,update_permission_incharge,update_permission,getPermissionInfo,login_request,logout_request,homeadmin,create,homeuser,ChartData,dynamicnavbar,getEmpInfo,delete_user,forget_password,forget_path,getauthempInfo
+from dlw.views import m2sub,m2getwono,m2getdoc_no,m2getpart_no,m2getassly,m2getbr,m2view,shiftsave,test,getshopempinfo,update_emp_shift_admin,update_emp_shift,update_permission_incharge,update_permission,getPermissionInfo,login_request,logout_request,homeadmin,create,homeuser,ChartData,dynamicnavbar,getEmpInfo,delete_user,forget_password,forget_path,getauthempInfo,checkloco,jpo,getYrDgp,bprodplan
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
@@ -47,4 +47,15 @@ urlpatterns = [
     path('update_emp_shift/',update_emp_shift,name='update_emp_shift'),
     path('update_emp_shift_admin/',update_emp_shift_admin,name='update_emp_shift_admin'),
     path('test/',test,name='test'),
+    path('m2view/',m2view,name='m2view'),
+    path('ajax/m2getbr/',m2getbr,name='m2getbr'),
+    path('ajax/m2getassly/',m2getassly,name='m2getassly'),
+    path('ajax/m2getpart_no/',m2getpart_no,name='m2getpart_no'),
+    path('ajax/m2getdoc_no/',m2getdoc_no,name='m2getdoc_no'),
+    path('ajax/m2getwono',m2getwono,name='m2getwono'),
+    path('ajax/get_yr_dgp/',getYrDgp,name='get_yr_dgp'),
+    path('ajax/check_loco/',checkloco,name='check_loco'),
+    path('aprodplan/',bprodplan,name='aprodplan'),
+    path('jpo/',jpo,name='jpo'),
+    path('m2sub/',m2sub,name='m2sub'),
 ]
