@@ -1370,7 +1370,7 @@ def bprodplan(request):
 
                             o=None
 
-    return render(request,'AProdPlan.html',context)
+    return render(request,'newaprodplan.html',context)
 
 
 

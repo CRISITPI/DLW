@@ -2,9 +2,6 @@
        
 {% block content %}
 <style>
-    /* #divdata{
-    display: none;
-} */
         #customers {
           font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
           border-collapse: collapse;
@@ -19,7 +16,7 @@
           padding: 8px;
         }
         
-        /* #customers tr:nth-child(even){background-color: #f2f2f2;} */
+        #customers tr:nth-child(even){background-color: #f2f2f2;}
         
         #customers tr:hover {background-color: #ddd;}
         
@@ -44,7 +41,7 @@
           padding: 8px;
         }
         
-        /* #custo tr:nth-child(even){background-color: #f2f2f2;} */
+        #custo tr:nth-child(even){background-color: #f2f2f2;}
         
         #custo tr:hover {background-color: #ddd;}
         
@@ -62,24 +59,14 @@
         .dropselect option {
             width : 100px;
         }
-        table {
-  border-collapse: collapse;
-  width: 100%;
-}
-
-th, td {
-  padding: 8px;
-  text-align: left;
-  border-bottom: 1px solid #ddd;
-}
     
     </style>
-<form action="http://127.0.0.1:8000/aprodplan/" method="POST" id="DogForm">{%csrf_token%}
+<form action="http://127.0.0.1:8000/aprodplan/" method="POST">{%csrf_token%}
     <center><h2>Annual Production Plan</h2></center>
 <div class="containers">
 <table align="center" id="customers">
     <tr>
-        <td style="width: 15%"><b>Role:</b></td><td style="width: 25%">{{Role}}</td>
+        <td style="width: 15%"><b>Role:</b></td><td style="width: 10%">{{Role}}</td>
         <td style="width: 15%"><b>Financial Year:</b></td><td style="width: 10%">{{cyear}}</td>
         <td style="width: 12%"><b>Revision:</b></td><td style="width: 10%">{{revex}}</td>
         <input type="hidden" name="rev" value={{revex}} class="form-control" />
@@ -135,6 +122,8 @@ th, td {
             </div>
             </select>
         </div></td>
+        <td><b>Num Of FY's:</b></td>
+        <td><input type="text" id="numfy" name="numfy" value={{numfy}} class="form-control"/></td>
     </tr>
 {% endif %}
 {% if "Dy_CME_Spares" in Role %}
@@ -147,7 +136,7 @@ th, td {
             </div>
             </select>
         </div></td>
-        <td style="text-align: center"><b>Num Of FY's:</b></td>
+        <td><b>Num Of FY's:</b></td>
         <td><input type="text" id="numfy" name="numfy" value={{numfy}} class="form-control"/></td>
         <td colspan="2"><input type="submit" name ='proceed' value='Proceed' id="submit" class="button button2"/></td>
     </tr>
@@ -175,64 +164,80 @@ th, td {
 {% endif %}
 </table></div>
 <table id="customers" align="center">
-        <input type="hidden" name="bufcspan" id="bufcspan" value={{bufcspan}}>
-        <input type="hidden" name="cspan" id="cspan" value={{bufcspan}}>
+    <input type="hidden" name="bufcspan" id="bufcspan" value={{bufcspan}}>
+    <input type="hidden" name="cspan" id="cspan" value={{bufcspan}}>
+
     {% if typec == "nrc" or typec == "export" or typec == "ind-rail" %}
+        </table>
+        
         <div id="divdata">
+        
         <table id="custo" align="center">
             <h3><b>Existing Data</b></h3>
+        
+        
             {% if typec == "nrc" or typec == "export" or typec == "ind-rail" %}
-            <tr>
-            <td colspan={{cspan}}></td>
-            <td colspan={{bufcspan}}>Buffer</td>
-            </tr>
-    
-                <tr>
-                <td>Description</td>
-                {% for key, values in years.items %}
-                <td>{{values.yrs}}</td>
-                {% endfor %}
-                {% for key, values in years.items %}
-                <td>{{values.yrs}}</td>
-                {% endfor %}
-                </tr>
-                {% for key, values in dictemper.items %}                   
-                <tr>
-                  <td>{{values.loty}}</td>
-                
-                    <textarea name="editloco{{forloop.counter}}" style="display:none;">{{values.loty}}</textarea>
+            <tr >
                
-    
-                  {% for key,value in values.dict.items %}
-                <input type="hidden" name="num_of_loco" value={{forloop.parentloop.counter}} />
-    
-                <input type="hidden" name="num_of_numfy" value={{forloop.counter}} />
-                
-    
-                  <td><input type="text"  name="edit{{forloop.parentloop.counter0}}{{forloop.counter}}" value="{{value.yrtq}}" pattern="[^a-z,^A-Z]*" title="cannot have alphabets" class="form-control" style="white-space:pre"/></td>
-                  {% endfor %}
-                  {% for key,value in values.dict.items %}
-                  <td><input type="text"  name="editbf{{forloop.parentloop.counter0}}{{forloop.counter}}" value="{{value.yrbq}}" pattern="[^a-z,^A-Z]*" title="cannot have alphabets" class="form-control"/></td>
-                  {% endfor %} 
+                <td colspan={{cspan}}></td>
+               <td colspan={{bufcspan}}>Buffer</td>
+            </tr>
+
+            <tr>
+            <td>
+                Description
+            </td>
+            {% for key, values in years.items %}
+            <td>
+                {{values.yrs}}
+            </td>
+            {% endfor %}
+            {% for key, values in years.items %}
+            <td>
+                {{values.yrs}}
+            </td>
+            {% endfor %}
+            </tr>
+        
+            {% for key, values in dictemper.items %}
+        
+            <tr>
+
+        
+              <td>{{values.loty}}</td>
             
-                </tr>
-                {% endfor %}
+                    <textarea name="editloco{{forloop.counter}}" style="display:none;">{{values.loty}}</textarea>
+
+              {% for key,value in values.dict.items %}
+            <input type="hidden" name="num_of_loco" value={{forloop.parentloop.counter}} />
+
+            <input type="hidden" name="num_of_numfy" value={{forloop.counter}} />
+            
+
+              <td><input type="text"  name="edit{{forloop.parentloop.counter0}}{{forloop.counter}}" value="{{value.yrtq}}" pattern="[^a-z,^A-Z]*" title="cannot have alphabets" class="form-control"/></td>
+              {% endfor %}
+              {% for key,value in values.dict.items %}
+              <td><input type="text"  name="editbf{{forloop.parentloop.counter0}}{{forloop.counter}}" value="{{value.yrbq}}" pattern="[^a-z,^A-Z]*" title="cannot have alphabets" class="form-control"/></td>
+              {% endfor %} 
+        
+            </tr>
+            {% endfor %}
            
            </tr>
             {% endif %}
         </table>
 </div>
-        <!-- for adding new loco -->
-        <table id="custo" align="center">
-        <tr>
-            <td><input type="button" id="add" value="Add Loco"/></td>
-            <input type="hidden" name="num" value="THE OUTPUT OF PRODUCT FUNCTION" id="myvalue"/>
-        </tr>
-        <div id="divid" style="display: none"><input type="text" class="form-control" value="" id="msg"/></div></table>
-        <table id="customers" align="center"><div id="items"> </div></table>
+<!-- for adding new loco -->
+<table id="custo" align="center">
+    <tr>
+        <td><input type="button" id="add" value="Add Loco"/></td>
+        <input type="hidden" name="num" value="THE OUTPUT OF PRODUCT FUNCTION" id="myvalue"/>
+    </tr>
+    <div id="divid" style="display: none"><input type="text" class="form-control" value="" id="msg"/></div></table>
+    <table id="customers" align="center"><div id="items"> </div></table>
 
-        <!-- for deleting the locos -->
-        <table id="custo" align="center">
+    <!-- for deleting the locos -->
+    <table id="custo" align="center">
         <tr>
             <td><input type="button" id="delloco" value="Delete a Loco"/></td>
             <input type="hidden" name="num_del" value="THE OUTPUT OF DEL FUNCTION" id="delmyvalue"/>
@@ -249,112 +254,167 @@ th, td {
                     {% endfor %}
             </datalist>
 <table id="customers" align="center">
+        <tr>
+            <td><b>Name</b></td>
+            <td><b>Designation</b></td>
+        </tr>
+            {% for k,v in namedg.items %}
             <tr>
-                <td><b>Name</b></td>
-                <td><b>Designation</b></td>
+            <td style="width: 10%"><input type="text" name="namep{{forloop.counter}}" placeholder="name" wrap="soft" class="form-control" style="overflow:hidden; resize:none;" required value="{{v.name}}"/></td>
+            <td style="width: 10%"><input type="text" name="desig{{forloop.counter}}" placeholder="designation" wrap="soft" class="form-control" required value="{{v.dgn}}"/></td>
             </tr>
-                {% for k,v in namedg.items %}
-                <tr>
-                <td style="width: 10%"><input type="text" name="namep{{forloop.counter}}" placeholder="name" wrap="soft" class="form-control" style="overflow:hidden; resize:none;" required value="{{v.name}}"/></td>
-                <td style="width: 10%"><input type="text" name="desig{{forloop.counter}}" placeholder="designation" wrap="soft" class="form-control" required value="{{v.dgn}}"/></td>
-                </tr>
-                {% endfor %}
+            {% endfor %}
 </table>
 <table id="customers">
 <tr>
-        <td style="width: 20%"><h5><b>Heading of Major Alterations:</b></h5></td>
-        <td><textarea name="headalt" placeholder="alterations" style="width: 80%" rows="2" required>{{headalt}}</textarea></td>
+    <td style="width: 20%"><h5><b>Heading of Major Alterations:</b></h5></td>
+    <td><textarea name="headalt" placeholder="alterations" style="width: 80%" rows="2" required>{{headalt}}</textarea></td>
 </tr>
- <tr>
-        <td><h5><b>Major Alterations:</b></h5></td>
-        <td><textarea name="mjalt" placeholder="alterations" style="width: 80%" rows="5">{{mjalt}}</textarea></td>
+<tr>
+    <td><h5><b>Major Alterations:</b></h5></td>
+    <td><textarea name="mjalt" placeholder="alterations" style="width: 80%" rows="5">{{mjalt}}</textarea></td>
 </tr>
- <tr>
-    <td><h5><b>Remarks:</b></h5></td>
-   <td><textarea name="remk" placeholder="remark" style="width: 80%" rows="5">{{remk}}</textarea></td>
+<tr>
+<td><h5><b>Remarks:</b></h5></td>
+<td><textarea name="remk" placeholder="remark" style="width: 80%" rows="5">{{remk}}</textarea></td>
 </tr>
 {% endif %}
 <tr><td></td><td></td></tr>
-    {% if typec == "rspm" or typec == "zrover" or typec == "rspitm" or typec == "zr" or typec == "nrcdgset" %}
+    {% if typec == "rspm" or typec == "zrover" or typec == "zrasstn" or typec == "rspitm" or typec == "zr" or typec == "nrcdgset" %}
     <tr>
             <td>
-                <!-- <input type="button" name="dispdata" id="dispdata" Value="Display Data" onclick="showmydiv()" /> -->
+                <input type="button" name="dispdata" id="dispdata" Value="Display Data" onclick="showmydiv()" />
             </td>
             <td>
-                <!-- <input type="button" name="hidedata" id="hidedata" Value="Hide Data" onclick="hidemydiv()" /> -->
+                <input type="button" name="hidedata" id="hidedata" Value="Hide Data" onclick="hidemydiv()" />
             </td>
-    </tr>
+        </tr>
         </table>
+        
         <div id="divdata">
         <table id="custo" align="center">
             <h1><b>Existing Data
             </b></h1>
             {% if typec == "rspm" or typec == "zrover" or typec == "rspitm" or typec == "zr" or typec == 'zrasstn' or typec == "nrcdgset" %}
-        
-            <tr >  
-            <td colspan={{cspan}}></td>
+           <tr >
+               
+                <td colspan={{cspan}}></td>
             {% if typec == "zrover" or typec == "zr" or typec == 'zrasstn' or typec == "nrcdgset" %}
-                <td colspan={{bufcspan}}>Buffer</td>
-                {% endif %}
-                </tr>
-                <tr>
-                <td>Description</td>
-                {% for key, values in years.items %}
-                    <td>{{values.yrs}}</td>
-                {% endfor %}
-                {% if typec == "zrover" or typec == "zr" or typec == 'zrasstn' or typec == "nrcdgset" %}
-                {% for key, values in years.items %}
-                    <td>{{values.yrs}}</td>
-                {% endfor %}
-            {% endif %}
+
+               <td colspan={{bufcspan}}>Buffer</td>
+               {% endif %}
             </tr>
-            {% for key, values in dictemper.items %}
-                <tr>
-                    <td>{{values.loty}}</td>
-                    <textarea name="editloco{{forloop.counter}}" style="display:none;">{{values.loty}}</textarea>
-                    {% for key,value in values.dict.items %}
-                    <input type="hidden" name="num_of_loco" value={{forloop.parentloop.counter}} />
-                    <input type="hidden" name="num_of_numfy" value={{forloop.counter}} />
-                    <td><input type="text"  name="edit{{forloop.parentloop.counter0}}{{forloop.counter}}" pattern="[^a-z,^A-Z]*" title="cannot have alphabets" value={{value.yrtq}} class="form-control"/></td>
+
+            <tr>
+            <td>
+                Description
+            </td>
+            {% for key, values in years.items %}
+            <td>
+                {{values.yrs}}
+            </td>
             {% endfor %}
             {% if typec == "zrover" or typec == "zr" or typec == 'zrasstn' or typec == "nrcdgset" %}
-                {% for key,value in values.dict.items %}
-                <td><input type="text"  name="editbf{{forloop.parentloop.counter0}}{{forloop.counter}}" pattern="[^a-z,^A-Z]*" title="cannot have alphabets" value={{value.yrbq}} class="form-control"/></td>
-                {% endfor %} 
+
+            {% for key, values in years.items %}
+            <td>
+                {{values.yrs}}
+            </td>
+            {% endfor %}
             {% endif %}
-        </tr>
-        {% endfor %}
-        </tr>
-        {% endif %}
-        <tr><td></td></tr></table></div>
-        <table id="custo" align="center">
-        <tr><td><input type="hidden" name="num_up" value="THE OUTPUT OF UPDATE FUNCTION" id="upmyvalue"/></td>
-        </tr>
-        <tr><td></td><td></td></tr>
+            </tr>
+
+
+            {% for key, values in dictemper.items %}
+        
+            <tr>
+
+        
+              <td>{{values.loty}}</td>
+            
+                    <textarea name="editloco{{forloop.counter}}" style="display:none;">{{values.loty}}</textarea>
+
+              {% for key,value in values.dict.items %}
+            <input type="hidden" name="num_of_loco" value={{forloop.parentloop.counter}} />
+
+            <input type="hidden" name="num_of_numfy" value={{forloop.counter}} />
+            
+
+              <td><input type="text"  name="edit{{forloop.parentloop.counter0}}{{forloop.counter}}" value={{value.yrtq}} pattern="[^a-z,^A-Z]*" title="cannot have alphabets" class="form-control"/></td>
+              {% endfor %}
+            {% if typec == "zrover" or typec == "zr" or typec == 'zrasstn' or typec == "nrcdgset" %}
+
+              {% for key,value in values.dict.items %}
+              <td><input type="text"  name="editbf{{forloop.parentloop.counter0}}{{forloop.counter}}" value={{value.yrbq}} pattern="[^a-z,^A-Z]*" title="cannot have alphabets" class="form-control"/></td>
+              {% endfor %} 
+              {% endif %}
+        
+            </tr>
+            {% endfor %}
+        
+            
+           
+           </tr>
+        
+            {% endif %}
+        
+        
+        <tr><td></td></tr>
+        
+        </table>
+        </div>
+        
+        
         
         <table id="custo" align="center">
-        <div id="upitems"> </div>
+        
+        
+            <tr>
+                <!-- <td><input type="button" id="uploco" value="Update a Material"/></td> -->
+                <td><input type="hidden" name="num_up" value="THE OUTPUT OF UPDATE FUNCTION" id="upmyvalue"/></td>
+            </tr>
+        
+            <tr>
+                <td>
+                </td>
+                <td>
+                </td>
+            </tr>
+        
+         <table id="custo" align="center">
+        
+        
+                <div id="upitems"> </div>
         </table>
-
+        
+        
+        
         <table id="custo" align="center">
-        <tr>
-            <td><input type="button" id="delloco" value="Delete a Material"/></td>
-            <td><input type="hidden" name="num_del" value="THE OUTPUT OF DEL FUNCTION" id="delmyvalue"/></td>
-        </tr>
-        <tr><td></td><td></td></tr>
-        <table id="custo" align="center"><div id="delitems"> </div></table>
+        
+        
+            <tr>
+                <td><input type="button" id="delloco" value="Delete a Material"/></td>
+                <td><input type="hidden" name="num_del" value="THE OUTPUT OF DEL FUNCTION" id="delmyvalue"/></td>
+            </tr>
+        
+            <tr>
+                <td>
+                </td>
+                <td>
+                </td>
+            </tr>
+        
+         <table id="custo" align="center"><div id="delitems"> </div></table>
         <table id="customers" align="center">
-        <tr>
+    <tr>
         <td><input type="button" id="add" value="Add Material"/></td>
+            
+
         <td><input type="hidden" name="num" value="THE OUTPUT OF PRODUCT FUNCTION" id="myvalue"/></td>
+
         <td><datalist id="lcname">
         {% for mt in materialname %}
             <option value="{{mt}}"></option>
-        {% endfor %}
-        </datalist>
-        <datalist id="delnm">
-        {% for lc in delcname %}
-        <option value="{{lc}}"></option>
         {% endfor %}
         </datalist></td>
     </tr>
@@ -373,28 +433,25 @@ th, td {
     <table id="customers" align="center">
 </tr>
 <div id="items"></div>
-<br>
 </table>
 {% if flag == 1%}
 <tr>
     <center><td><input type="submit" name="save" value="Save" class="button button2"/></td></center>
 </tr>
-<br>
-
 {% endif %}
 </table>
 </form>
-<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <!-- <script type='text/javascript' src='https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js'></script> -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/css/select2.min.css" rel="stylesheet" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/js/select2.min.js"></script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+ <!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet"/> -->
+
 
 
 <script language="javascript">
-    var locolist=[]
+     var locolist=[]
     var mydict={}
 var matchEnterdDate=0;
 //function to set back date opacity for non supported browsers
@@ -404,6 +461,7 @@ var matchEnterdDate=0;
         input.setAttribute('value', 'some text'); 
         if(input.value === "some text"){
             allDates = document.getElementsByClassName("xDateContainer");
+            console.log(allDates);
             matchEnterdDate=1;
             for (var i = 0; i < allDates.length; i++) {
                 allDates[i].style.opacity = "1";
@@ -421,18 +479,18 @@ function setCorrect(xObj,xTraget){
     }else{
         if(matchEnterdDate==1){document.getElementById(xTraget).value=xObj.value;}
     }
-    var datae=document.getElementById("xTime").value;
-console.log(datae)
+  
 }
 
-    var typecd=document.getElementById('lmtype').value;
+
+var typecd=document.getElementById('lmtype').value;
     console.log(typecd);
     $(document).ready(()=>{ 
             $("#type").val(typecd); 
         });  
-var j=0;
 
- $(document).ready(function(){
+var j=0;
+$(document).ready(function(){
     $("#type").change(function(e){
    	e.preventDefault();
    	var username = $(this).val();
@@ -478,12 +536,14 @@ $("#add").click(function(e){
 
             var htAppend='<div id='+loconame+'><table id="customers"><tr>'+'<td><select class="dropselect" name="'+loconame+'" style="width:100%;" onchange="updatelist(this.name)" required><option value="" selected hidden>Loco/Material</option><option></option></select></td>';
         var q=numf;
+        console.log("q"+String(q));
         var qname1;
         var qnameb1;
         var yrname;
         var i=1,bi=1;
         for (i = 1; i <= q; i++) { 
             qname1=qaunt+String(j)+String(i);
+            console.log(qname1);
             htAppend=htAppend+'<td><input type="text" name="'+qname1+'" pattern="[^a-z,^A-Z]*" title="cannot have alphabets" class="form-control"/></td>';
 
              
@@ -554,27 +614,6 @@ $("#add").click(function(e){
             });
             console.log(locolist); 
 
-
-
-//          $("#addloco").change(function(e){
-//    	e.preventDefault();
-//    	var username = $(this).val();
-//    	var data = {username};
-//        	$.ajax({
-//    		type : 'GET',
-//    		url :  "{% url 'check_loco' %}",
-//         dataType : 'json',
-//    		data : data,
-//    		success : function(response){
-//             if (response.jpo_info.flag == 1)
-//             {
-//                 window.alert("Selected loco already exists!!");
-//                 $("#addloco").html('');
-//             }
-//    		}
-//    	});
-// });
-
     });
 
     $('body').on('click','#del',function(e){
@@ -582,9 +621,6 @@ $("#add").click(function(e){
         var abc=mydict[tst];
         locolist.push(abc);
         delete mydict[tst];
-        // var abc=document.getElementById(tst).getElementsByClassName("dropselect");
-        // var val=abc.options[abc.selectedIndex].value;
-        // console.log(val);
         $(this).parent('div').remove();
     });
 
@@ -631,8 +667,10 @@ function assign(){
        document.getElementById('myvalue').value =product();
     }
 
-var r=0;
+    var r=0;
+
 $(document).ready(function(){
+
     $("#newr").click(function(e){
         event.preventDefault()
         var name="rem";
@@ -695,7 +733,7 @@ $(document).ready(function(){
 
 
         var name="upname";
-        l++;
+        l++;9037
         console.log(l);
         upassign();
         var loconame=name+String(l);
@@ -703,7 +741,7 @@ $(document).ready(function(){
         var qauntb="upquantityb";
         var numf=$('#numfy').val();
         console.log(numf);
-        // '<div><table id="customers"><tr>'+
+        
 
         if(l==1)
         {
@@ -784,7 +822,7 @@ function upassign(){
        document.getElementById('upmyvalue').value =update();
     }
 
-var d=0;
+    var d=0;
 $(document).ready(function(){
     $("#delloco").click(function(e){
         event.preventDefault()
