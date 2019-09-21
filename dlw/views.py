@@ -758,34 +758,37 @@ def m2getdoc_no(request):
 
 
 
-
+@login_required
+@role_required(allowed_roles=["2301","2302"])
 def m2sub(request):
-     if request.method == "POST":
+    cuser=request.user
+    usermaster=user_master.objects.filter(emp_id=cuser).first()
+    rolelist=usermaster.role.split(", ")
+    nav=dynamicnavbar(request,rolelist)
+    if request.method == "POST":
+        shop_sec = request.POST.get('shop_sec')
+        part_no = request.POST.get('part_nop')
+        wo_no = request.POST.get('wo_no')
+        brn_no = request.POST.get('br_no')
+        assembly_no = request.POST.get('assm_no')
+        doc_no = request.POST.get('doc_no')
 
-         shop_sec = request.POST.get('shop_sec')
-         part_no = request.POST.get('part_nop')
-         wo_no = request.POST.get('wo_no')
-         brn_no = request.POST.get('br_no')
-         assembly_no = request.POST.get('assm_no')
-         doc_no = request.POST.get('doc_no')
-
-     obj  = Oprn.objects.filter(shop_sec=shop_sec,part_no=part_no).values('opn', 'shop_sec', 'lc_no', 'des','pa','at','lot')
-     date = M2Doc.objects.filter(m2sln=doc_no).values('m2prtdt').distinct()
-     len = obj.count()
-     context = {
-         'obj': obj,
-         'len': len,
-         'date': date,
-         'shop_sec': shop_sec,
-         'part_no': part_no,
-         'wo_no': wo_no,
-         'brn_no': brn_no,
-         'assembly_no': assembly_no,
-         'doc_no': doc_no,
-     }
-    # print(obj.opn)
-
-     return render(request, "m2view1.html", context)
+    obj  = Oprn.objects.filter(shop_sec=shop_sec,part_no=part_no).values('opn', 'shop_sec', 'lc_no', 'des','pa','at','lot')
+    date = M2Doc.objects.filter(m2sln=doc_no).values('m2prtdt').distinct()
+    len = obj.count()
+    context = {
+        'nav':nav,
+        'obj': obj,
+        'len': len,
+        'date': date,
+        'shop_sec': shop_sec,
+        'part_no': part_no,
+        'wo_no': wo_no,
+        'brn_no': brn_no,
+        'assembly_no': assembly_no,
+        'doc_no': doc_no,
+    }
+    return render(request, "m2view1.html", context)
 
 
 
