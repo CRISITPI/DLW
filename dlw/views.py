@@ -12,7 +12,7 @@ from django.contrib.sessions.models import Session
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.views.generic import View
-from dlw.models import testc,navbar,user_master,roles,shift_history,shift,M2Doc,Batch,Hwm5,Part,Oprn
+from dlw.models import testc,navbar,user_master,roles,shift_history,shift,M2Doc,Batch,Hwm5,Part,Oprn,testing_purpose
 from dlw.serializers import testSerializer
 import re,uuid,copy
 from copy import deepcopy
@@ -3013,15 +3013,9 @@ def checkloco(request):
 
 
 def test(request):
-    employee=user_master.objects.all().filter(parent="Wheel")
-    print(employee.count())
-    temp="radio"
-    if request.method=="POST":
-        print(request.POST.get('radio1'))
-        print(request.POST.get('radio2'))
-        print(employee[0])
-
-    context={
-        'employee':employee,
-    }
-    return render(request,'test.html',context)
+    if request.method == "POST":
+        obj = testing_purpose.objects.create()
+        obj.first = request.POST.get('firstinp')
+        obj.second = request.POST.get('secondinp')
+        obj.save()
+    return render(request,'test.html',{})

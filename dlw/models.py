@@ -3265,3 +3265,8 @@ class namedgn(models.Model):
     namep=models.CharField(null=True,max_length=50)
     design=models.CharField(null=True,max_length=30)
     revision=models.IntegerField(null=True,default=99)
+
+
+class testing_purpose(models.Model):
+    first=models.CharField(null=True,max_length=50)
+    second=models.CharField(null=True,max_length=50)
