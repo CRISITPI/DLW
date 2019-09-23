@@ -69,26 +69,10 @@
     }
 </style>
 <form action="http://127.0.0.1:8000/aprodplan/" method="POST">{%csrf_token%}
-<<<<<<< HEAD
-    <br><center><h2>Annual Production Plan</h2></center><br>
-<div class="containers">
-<table align="center" id="customers">
-    <tr>
-        <td style="width: 15%"><b>Role:</b></td><td style="width: 10%">{{Role}}</td>
-        <td style="width: 15%"><b>Financial Year:</b></td><td style="width: 10%">{{cyear}}</td>
-        <td style="width: 12%"><b>Revision:</b></td><td style="width: 10%">{{revex}}</td>
-        <input type="hidden" name="rev" value={{revex}} class="form-control" />
-    </tr>
-    <tr>
-    {% if "Dy_CME/Plg" in Role %}
-        <td><div class="dropdown">
-            <select name="type" class="form-control ll" id="type" required>
-=======
     <br>
     <center>
         <h2>Annual Production Plan</h2>
-    </center>
-    <br>
+    </center><br>
     <div class="containers">
         <table align="center" id="customers">
             <tr>
@@ -105,7 +89,6 @@
                 <td>
                     <div class="dropdown">
                         <select name="type" class="form-control ll" id="type" required>
->>>>>>> master
             <div class="dropdown-content">
             <option selected="selected" disabled>Type:</option>
             <option value="ind-rail">Indian Railway Loco</option>
@@ -126,7 +109,7 @@
                 <td style="width: 15%"><b>No. of Designated Persons: </b></td>
                 <td><input type="text" id="dgp" name="dgp" value={{dgp}} class="form-control" pattern="[0-9]" title="Cannot have alphabets" required/></td>
                 <input type="hidden" id="lmtype" value={{typec}} class="form-control" />
-                <td><input type="submit" name='proceed' value='Proceed' id="submit" class="button button2" /></td>
+                <td><input type="submit" name='proceed' value='Proceed' id="submit" class="btn btn-primary" /></td>
             </tr>
             {% if flag == 1 %}
             <tr>
@@ -478,9 +461,11 @@
                 </table>
                 {% if flag == 1%}
                 <tr>
+                    <br>
                     <center>
-                        <td><input type="submit" name="save" value="Save" class="button button2" /></td>
+                        <td><input type="submit" name="save" value="Save" class="btn btn-primary" /></td>
                     </center>
+                    <br>
                 </tr>
                 {% endif %}
             </table>
