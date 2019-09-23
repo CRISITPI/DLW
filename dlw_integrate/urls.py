@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from dlw.views import m2sub,m2getwono,m2getdoc_no,m2getpart_no,m2getassly,m2getbr,m2view,shiftsave,test,getshopempinfo,update_emp_shift_admin,update_emp_shift,update_permission_incharge,update_permission,getPermissionInfo,login_request,logout_request,homeadmin,create,homeuser,ChartData,dynamicnavbar,getEmpInfo,delete_user,forget_password,forget_path,getauthempInfo,checkloco,jpo,getYrDgp,bprodplan
+from dlw.views import m2getwono,m2getdoc_no,m2getpart_no,m2getassly,m2getbr,m2view,shiftsave,test,getshopempinfo,update_emp_shift_admin,update_emp_shift,update_permission_incharge,update_permission,getPermissionInfo,login_request,logout_request,homeadmin,create,homeuser,ChartData,dynamicnavbar,getEmpInfo,delete_user,forget_password,forget_path,getauthempInfo,checkloco,jpo,getYrDgp,bprodplan
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
@@ -57,5 +57,4 @@ urlpatterns = [
     path('ajax/check_loco/',checkloco,name='check_loco'),
     path('aprodplan/',bprodplan,name='aprodplan'),
     path('jpo/',jpo,name='jpo'),
-    path('m2sub/',m2sub,name='m2sub'),
 ]

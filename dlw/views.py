@@ -683,6 +683,7 @@ def m2view(request):
             req = M2Doc.objects.all().filter(f_shopsec=rolelist[i]).values('batch_no').distinct()
             wo_no =wo_no | req
         context = {
+            'sub':0,
             'len' :len(rolelist),
             'wo_no':wo_no,
             'nav':nav,
@@ -690,16 +691,91 @@ def m2view(request):
             'usermaster':usermaster,
             'roles' :rolelist
         }
-        return render(request,"m2view.html",context)
+        # return render(request,"m2view.html",context)
     elif(len(rolelist)>1):
         context = {
+            'sub':0,
             'len' :len(rolelist),
             'nav':nav,
             'ip':get_client_ip(request),
             'usermaster':usermaster,
             'roles' :rolelist
         }
-        return render(request,"m2view.html",context)
+
+
+    # context={}
+    
+
+    # cuser=request.user
+    # usermaster=user_master.objects.filter(emp_id=cuser).first()
+    # rolelist=usermaster.role.split(", ")
+    # nav=dynamicnavbar(request,rolelist)
+    # wo_no=M2Doc.objects.all().values('batch_no').distinct()
+    # context={'nav':nav,
+    #         'ip':get_client_ip(request),
+	# 		'wo_no':wo_no}
+    # print(wo_no)
+    if request.method == "POST":
+        print("hi")
+        submitvalue = request.POST.get('proceed')
+        if submitvalue=='Proceed':
+            shop_sec = request.POST.get('shop_sec')
+            part_no = request.POST.get('part_nop')
+            wo_no = request.POST.get('wo_no')
+            brn_no = request.POST.get('br_no')
+            assembly_no = request.POST.get('assm_no')
+            doc_no = request.POST.get('doc_no')
+
+
+            obj  = Oprn.objects.filter(shop_sec=shop_sec, part_no=part_no).values('opn', 'shop_sec', 'lc_no', 'des','pa','at','lot','mat_rej','qtr_accep', 'qty_prod','work_rej').order_by('opn')
+            date = M2Doc.objects.filter(m2sln=doc_no).values('m2prtdt').distinct()
+            leng = obj.count()
+            context = {
+                'nav':nav,
+                'ip':get_client_ip(request),
+                'obj': obj,
+                'sub': 1,
+                'len': leng,
+                'date': date,
+                'shop_sec': shop_sec,
+                'part_no': part_no,
+                'wo_no': wo_no,
+                'brn_no': brn_no,
+                'assembly_no': assembly_no,
+                'doc_no': doc_no,
+            }
+
+
+        if submitvalue=='Submit':
+            leng=request.POST.get('len')
+            shopsec= request.POST.get('shopsec')
+            partno= request.POST.get('partno')
+            for i in range(1, int(leng)+1):
+                qtypr=request.POST.get('qtypr'+str(i))
+                qtyac = request.POST.get('qtyac'+str(i))
+                wrrej = request.POST.get('wrrej'+str(i))
+                matrej = request.POST.get('matrej'+str(i))
+                opn=request.POST.get('opn'+str(i))
+
+                Oprn.objects.filter(shop_sec=shopsec, part_no=partno, opn=opn).update(qty_prod=int(qtypr),qtr_accep=int(qtyac),work_rej=int(wrrej),mat_rej=int(matrej))
+                wo_no=M2Doc.objects.all().values('batch_no').distinct()
+
+            # context={
+            #     'nav':nav,
+            #     'ip':get_client_ip(request),
+			# 	'wo_no':wo_no,
+
+            #     'len' :len(rolelist),
+               
+            #     'usermaster':usermaster,
+            #     'roles' :rolelist,
+            #     'sub':0
+            #     }
+
+    
+
+
+    return render(request,"m2view.html",context)
 
 
 def m2getwono(request):
@@ -755,37 +831,6 @@ def m2getdoc_no(request):
 
 
 
-@login_required
-@role_required(allowed_roles=["2301","2302"])
-def m2sub(request):
-    cuser=request.user
-    usermaster=user_master.objects.filter(emp_id=cuser).first()
-    rolelist=usermaster.role.split(", ")
-    nav=dynamicnavbar(request,rolelist)
-    if request.method == "POST":
-        shop_sec = request.POST.get('shop_sec')
-        part_no = request.POST.get('part_nop')
-        wo_no = request.POST.get('wo_no')
-        brn_no = request.POST.get('br_no')
-        assembly_no = request.POST.get('assm_no')
-        doc_no = request.POST.get('doc_no')
-
-    obj  = Oprn.objects.filter(shop_sec=shop_sec,part_no=part_no).values('opn', 'shop_sec', 'lc_no', 'des','pa','at','lot')
-    date = M2Doc.objects.filter(m2sln=doc_no).values('m2prtdt').distinct()
-    len = obj.count()
-    context = {
-        'nav':nav,
-        'obj': obj,
-        'len': len,
-        'date': date,
-        'shop_sec': shop_sec,
-        'part_no': part_no,
-        'wo_no': wo_no,
-        'brn_no': brn_no,
-        'assembly_no': assembly_no,
-        'doc_no': doc_no,
-    }
-    return render(request, "m2view1.html", context)
 
 
 
