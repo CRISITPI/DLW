@@ -1961,9 +1961,12 @@ class Oprn(models.Model):
     rb = models.DecimalField(db_column='RB', max_digits=12, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
     rat_hr = models.DecimalField(db_column='RAT_HR', max_digits=6, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
     rat = models.DecimalField(db_column='RAT', max_digits=6, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
+    mat_rej = models.IntegerField(db_column='MAT_REJ', blank=True, null=True)  # Field name made lowercase.
+    qtr_accep = models.IntegerField(db_column='QTR_ACCEP', blank=True, null=True)  # Field name made lowercase.
+    qty_prod = models.IntegerField(db_column='QTY_PROD', blank=True, null=True)  # Field name made lowercase.
+    work_rej = models.IntegerField(db_column='WORK_REJ', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
-        managed = False
         db_table = 'OPRN'
 
 
