@@ -70,6 +70,8 @@ input[type=button]:hover {
     <th>Document NO</th>
 </tr>
 <tr>
+
+  
     {% for i in date %}
     <td>{{i.m2prtdt}}</td>{% endfor %}
     <td>{{wo_no}}</td>
@@ -82,7 +84,7 @@ input[type=button]:hover {
 </tr></table>
 </br>
 
-<form action="." method = "POST">  {% csrf_token %}
+<form action="{% url 'm2view' %}" method = "POST">  {% csrf_token %}
 <table border="2"  align="center">
 <tr>
     <th>Operation NO:</th>
