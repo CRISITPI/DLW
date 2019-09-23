@@ -661,9 +661,6 @@ def forget_path(request):
 
 
 
-
-
-
 class ChartData(APIView):
     authentication_classes = []
     permission_classes = []
