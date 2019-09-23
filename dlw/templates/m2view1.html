@@ -74,63 +74,64 @@
 </br>
 
 <form action="{% url 'm2view' %}" method="POST"> {% csrf_token %}
-    <table border="2" align="center">
-        <tr>
-            <th>Operation NO:</th>
-            <th>Shop Section:</th>
-            <th>Load Centre:</th>
-            <th>Operation Description:</th>
-            <th>PA:</th>
-            <th>TA:</th>
-            <th>NO:</th>
-            <th>QTY Produced:</th>
-            <th>QTY Accepted:</th>
-            <th>Work Rejected:</th>
-            <th>Material Rejected:</th>
-        </tr>
-        {% for i in obj %}
-        <tr>
-            <td>
-                {{i.opn}}
-            </td>
-            <td>
-                {{i.shop_sec}}
-            </td>
-            <td>
-                {{i.lc_no}}
-            </td>
-            <td>
-                {{i.des}}
-            </td>
-            <td>
-                {{i.pa}}
-            </td>
-            <td>
-                {{i.at}}
-            </td>
-            <td>
-                {{i.lot}}
-            </td>
-            <br>
-            <td>
-                <input type="text" id="qtypr" name="qtypr">
-            </td>
-            <td>
-                <input type="text" id="qtyac" name="qtyac">
-            </td>
-            <td>
-                <input type="text" id="wrrej" name="wrrej">
-            </td>
-            <td>
-                <input type="text" id="matrej" name="matrej">
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
-    <br><br>
-    <center><input type="submit" name="submit" value="Submit/सबमिट"></center>
-</form>
+    <form action="." method="POST"> {% csrf_token %}
+        <table border="2" align="center">
+            <tr>
+                <th>Operation NO:</th>
+                <th>Shop Section:</th>
+                <th>Load Centre:</th>
+                <th>Operation Description:</th>
+                <th>PA:</th>
+                <th>TA:</th>
+                <th>NO:</th>
+                <th>QTY Produced:</th>
+                <th>QTY Accepted:</th>
+                <th>Work Rejected:</th>
+                <th>Material Rejected:</th>
+            </tr>
+            {% for i in obj %}
+            <tr>
+                <td>
+                    {{i.opn}}
+                </td>
+                <td>
+                    {{i.shop_sec}}
+                </td>
+                <td>
+                    {{i.lc_no}}
+                </td>
+                <td>
+                    {{i.des}}
+                </td>
+                <td>
+                    {{i.pa}}
+                </td>
+                <td>
+                    {{i.at}}
+                </td>
+                <td>
+                    {{i.lot}}
+                </td>
+                <br>
+                <td>
+                    <input type="text" id="qtypr" name="qtypr">
+                </td>
+                <td>
+                    <input type="text" id="qtyac" name="qtyac">
+                </td>
+                <td>
+                    <input type="text" id="wrrej" name="wrrej">
+                </td>
+                <td>
+                    <input type="text" id="matrej" name="matrej">
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        <br><br>
+        <center><input type="submit" name="submit" value="Submit/सबमिट"></center>
+    </form>
 
 
 
-{% endblock content %}
+    {% endblock content %}
