@@ -48,6 +48,7 @@
 <br><br>
 <h3 align="center">M2-Route Card</h3>
 <br><br>
+<<<<<<< HEAD
 <table border="2"  align="center" >
 <tr>
     <th>Printed Date(MM-DD-YYYY)</th>
@@ -156,6 +157,34 @@
 </br>
 
 <form action="." method="POST"> {% csrf_token %}
+=======
+<table border="2" align="center">
+    <tr>
+        <th>Printed Date(MM-DD-YYYY)</th>
+        <th>Work Order NO</th>
+        <th>BRN NO</th>
+        <th>Shop Section</th>
+        <th>Assembly NO</th>
+        <th>Part NO</th>
+        <!--<th>Part Description</th>-->
+        <th>Document NO</th>
+    </tr>
+    <tr>
+        {% for i in date %}
+        <td>{{i.m2prtdt}}</td>{% endfor %}
+        <td>{{wo_no}}</td>
+        <td>{{brn_no}}</td>
+        <td>{{shop_sec}}</td>
+        <td>{{assembly_no}}</td>
+        <td>{{part_no}}</td>
+        <!--<td>{{obj1}}</td>-->
+        <td>{{doc_no}}</td>
+    </tr>
+</table>
+</br>
+
+<form action="{% url 'm2view' %}" method="POST"> {% csrf_token %}
+>>>>>>> master
     <table border="2" align="center">
         <tr>
             <th>Operation NO:</th>
