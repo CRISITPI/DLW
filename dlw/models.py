@@ -3268,14 +3268,4 @@ class user_master(models.Model):
     shop_id = models.CharField(max_length=30, blank=True, null=True)
 
 
-class MachiningAirBox(models.Model):
-    sno=models.AutoField(primary_key=True)
-    bo_no=models.CharField(max_length=20,null=True)
-    bo_date=models.DateField(null=True)
-    airbox_sno=models.CharField(max_length=20,null=True)
-    airbox_make=models.CharField(max_length=20,null=True)
-    in_qty=models.IntegerField(null=True)
-    out_qty=models.IntegerField(null=True)
-    date=models.DateField(null=True)
-    loco_type=models.CharField(max_length=20,null=True)
-    dispatch_to=models.CharField(max_length=20,null=True)
+
