@@ -1,3 +1,4 @@
 env
 .vscode
 DLWEMPDATA.xls
+dlw/__pycache__
