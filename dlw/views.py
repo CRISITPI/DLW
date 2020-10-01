@@ -3061,3 +3061,6 @@ def test(request):
         obj.second = request.POST.get('secondinp')
         obj.save()
     return render(request,'test.html',{})
+
+
+####asdfghjklwertyui#####
